@@ -170,35 +170,54 @@ export const useCalculatorStore = create<CalculatorState>()(
   )
 );
 
-// Convenience hooks for specific slices
-export const useSettings = () =>
-  useCalculatorStore((state) => ({
-    settings: state.settings,
-    updateSettings: state.updateSettings,
-    resetSettings: state.resetSettings
-  }));
+// Convenience hooks for specific slices with shallow comparison
+export const useSettings = () => {
+  const settings = useCalculatorStore((state) => state.settings);
+  const updateSettings = useCalculatorStore((state) => state.updateSettings);
+  const resetSettings = useCalculatorStore((state) => state.resetSettings);
+  
+  return { settings, updateSettings, resetSettings };
+};
 
-export const useCalculator = () =>
-  useCalculatorStore((state) => ({
-    selectedSymbol: state.selectedSymbol,
-    stopLoss: state.stopLoss,
-    entryPrice: state.entryPrice,
-    calculationResult: state.calculationResult,
-    setSelectedSymbol: state.setSelectedSymbol,
-    setStopLoss: state.setStopLoss,
-    setEntryPrice: state.setEntryPrice,
-    calculate: state.calculate,
-    clearCalculation: state.clearCalculation
-  }));
+export const useCalculator = () => {
+  const selectedSymbol = useCalculatorStore((state) => state.selectedSymbol);
+  const stopLoss = useCalculatorStore((state) => state.stopLoss);
+  const entryPrice = useCalculatorStore((state) => state.entryPrice);
+  const calculationResult = useCalculatorStore((state) => state.calculationResult);
+  const setSelectedSymbol = useCalculatorStore((state) => state.setSelectedSymbol);
+  const setStopLoss = useCalculatorStore((state) => state.setStopLoss);
+  const setEntryPrice = useCalculatorStore((state) => state.setEntryPrice);
+  const calculate = useCalculatorStore((state) => state.calculate);
+  const clearCalculation = useCalculatorStore((state) => state.clearCalculation);
+  
+  return {
+    selectedSymbol,
+    stopLoss,
+    entryPrice,
+    calculationResult,
+    setSelectedSymbol,
+    setStopLoss,
+    setEntryPrice,
+    calculate,
+    clearCalculation
+  };
+};
 
-export const usePositions = () =>
-  useCalculatorStore((state) => ({
-    openPositions: state.openPositions,
-    addPosition: state.addPosition,
-    removePosition: state.removePosition,
-    clearPositions: state.clearPositions,
-    updatePosition: state.updatePosition
-  }));
+export const usePositions = () => {
+  const openPositions = useCalculatorStore((state) => state.openPositions);
+  const addPosition = useCalculatorStore((state) => state.addPosition);
+  const removePosition = useCalculatorStore((state) => state.removePosition);
+  const clearPositions = useCalculatorStore((state) => state.clearPositions);
+  const updatePosition = useCalculatorStore((state) => state.updatePosition);
+  
+  return {
+    openPositions,
+    addPosition,
+    removePosition,
+    clearPositions,
+    updatePosition
+  };
+};
 
 // Helper hook for stacking analysis
 export const useStackingAnalysis = () => {

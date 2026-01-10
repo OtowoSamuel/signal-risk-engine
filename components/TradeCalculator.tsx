@@ -10,6 +10,7 @@ import { useCalculator, useSettings } from '@/lib/store';
 import { getSymbolNames } from '@/lib/symbols';
 import { validateCalculationInputs } from '@/lib/calculator';
 import { SymbolName } from '@/types';
+import ShowMath from './ShowMath';
 
 export default function TradeCalculator() {
   const {
@@ -215,6 +216,14 @@ export default function TradeCalculator() {
                 </p>
               </div>
             )}
+
+            {/* Show Math Component */}
+            <ShowMath
+              calculationResult={calculationResult}
+              allocatedCapital={settings.allocatedCapital}
+              stopLoss={stopLoss}
+              symbol={selectedSymbol}
+            />
           </div>
         )}
 
