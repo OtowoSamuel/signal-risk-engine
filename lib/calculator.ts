@@ -33,13 +33,17 @@ export function calculateMaxLotSize(
 ): number {
   const symbolData = getSymbol(symbol);
   
-  if (slPoints <= 0 || mt5Balance <= 0) {
+  if (slPoints <= 0 || mt5Balance <= 0 || isNaN(slPoints) || isNaN(mt5Balance)) {
     return 0;
   }
 
   // Calculate raw lot size
   const rawLotSize = 
     (mt5Balance * MARGIN_USAGE_CAP) / (slPoints * symbolData.pointValue);
+
+  if (!isFinite(rawLotSize) || rawLotSize <= 0) {
+    return 0;
+  }
 
   // Apply MT5 constraints (FR-2.2)
   let lotSize = Math.floor(rawLotSize / symbolData.lotStep) * symbolData.lotStep;
@@ -62,13 +66,21 @@ export function calculateMargin(
 ): number {
   const symbolData = getSymbol(symbol);
   
+  if (lotSize <= 0 || isNaN(lotSize)) {
+    return 0;
+  }
+  
   // Use provided entry price or fall back to typical price for the symbol
-  const price = entryPrice || symbolData.typicalPrice;
+  const price = entryPrice && entryPrice > 0 ? entryPrice : symbolData.typicalPrice;
   
   // For Deriv synthetic indices:
   // Margin = (Lot Size × Contract Size × Price) / Leverage
   // Contract size is 1 for synthetic indices (not 100,000 like forex)
   const margin = (lotSize * symbolData.contractSize * price) / symbolData.leverage;
+  
+  if (!isFinite(margin)) {
+    return 0;
+  }
   
   return Math.round(margin * 100) / 100;
 }
@@ -311,14 +323,16 @@ export function validateAccountSettings(
   const errors: string[] = [];
 
   if (!settings.mt5Balance || settings.mt5Balance <= 0) {
-    errors.push('Total balance must be greater than 0');
+    errors.push('MT5 balance must be greater than 0');
   }
 
-  if (!settings.mt5Balance || settings.mt5Balance <= 0) {
-    errors.push('Allocated capital must be greater than 0');
+  if (settings.mt5Balance && settings.mt5Balance > 1000000) {
+    errors.push('MT5 balance exceeds maximum allowed (1,000,000)');
   }
 
-  // No additional validations needed for margin-based stacking
+  if (settings.targetMarginPercent && (settings.targetMarginPercent < 1 || settings.targetMarginPercent > 100)) {
+    errors.push('Target margin must be between 1% and 100%');
+  }
 
   return {
     valid: errors.length === 0,

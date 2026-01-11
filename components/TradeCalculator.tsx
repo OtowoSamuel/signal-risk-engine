@@ -102,8 +102,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               id="symbol"
               value={selectedSymbol}
               onChange={(e) => setSelectedSymbol(e.target.value as SymbolName)}
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"
-            >
+              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"              aria-label="Select trading symbol"            >
               {getSymbolNames().map((name) => (
                 <option key={name} value={name} className="bg-gray-900 text-white">
                   {name}
@@ -121,7 +120,10 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               type="number"
               id="entryPrice"
               value={entryPrice || ''}
-              onChange={(e) => setEntryPrice(parseFloat(e.target.value) || 0)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                setEntryPrice(isNaN(value) ? 0 : value);
+              }}
               min="0"
               step="0.01"
               placeholder="4500"
@@ -138,7 +140,10 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               type="number"
               id="slPrice"
               value={slPrice || ''}
-              onChange={(e) => setSlPrice(parseFloat(e.target.value) || 0)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                setSlPrice(isNaN(value) ? 0 : value);
+              }}
               min="0"
               step="0.01"
               placeholder="4472.29"

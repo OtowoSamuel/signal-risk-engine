@@ -87,6 +87,63 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     description: 'Simulates a market with 250% volatility, 1-second tick intervals'
   },
 
+  // VOLATILITY INDICES (2s) - Normal speed synthetic indices with fixed volatility
+  'Volatility 10 Index': {
+    name: 'Volatility 10 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 3500,
+    contractSize: 1,
+    description: 'Simulates a market with 10% volatility, 2-second tick intervals'
+  },
+  'Volatility 25 Index': {
+    name: 'Volatility 25 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 5500,
+    contractSize: 1,
+    description: 'Simulates a market with 25% volatility, 2-second tick intervals'
+  },
+  'Volatility 50 Index': {
+    name: 'Volatility 50 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 8000,
+    contractSize: 1,
+    description: 'Simulates a market with 50% volatility, 2-second tick intervals'
+  },
+  'Volatility 75 Index': {
+    name: 'Volatility 75 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 12000,
+    contractSize: 1,
+    description: 'Simulates a market with 75% volatility, 2-second tick intervals'
+  },
+  'Volatility 100 Index': {
+    name: 'Volatility 100 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 18000,
+    contractSize: 1,
+    description: 'Simulates a market with 100% volatility, 2-second tick intervals'
+  },
+
   // CRASH INDICES - Indices with periodic downward spikes
   'Crash 300 Index': {
     name: 'Crash 300 Index',

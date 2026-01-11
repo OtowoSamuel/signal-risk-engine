@@ -4,7 +4,7 @@
  */
 
 export type SymbolName =
-  // Volatility Indices (1s)
+  // Volatility Indices (1s) - Fast tick
   | 'Volatility 10 (1s) Index'
   | 'Volatility 25 (1s) Index'
   | 'Volatility 50 (1s) Index'
@@ -12,6 +12,12 @@ export type SymbolName =
   | 'Volatility 100 (1s) Index'
   | 'Volatility 150 (1s) Index'
   | 'Volatility 250 (1s) Index'
+  // Volatility Indices (2s) - Normal tick
+  | 'Volatility 10 Index'
+  | 'Volatility 25 Index'
+  | 'Volatility 50 Index'
+  | 'Volatility 75 Index'
+  | 'Volatility 100 Index'
   // Crash Indices
   | 'Crash 300 Index'
   | 'Crash 500 Index'
