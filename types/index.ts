@@ -15,10 +15,14 @@ export type SymbolName =
   // Crash Indices
   | 'Crash 300 Index'
   | 'Crash 500 Index'
+  | 'Crash 600 Index'
+  | 'Crash 900 Index'
   | 'Crash 1000 Index'
   // Boom Indices
   | 'Boom 300 Index'
   | 'Boom 500 Index'
+  | 'Boom 600 Index'
+  | 'Boom 900 Index'
   | 'Boom 1000 Index'
   // Jump Indices
   | 'Jump 10 Index'
@@ -41,7 +45,29 @@ export type SymbolName =
   | 'DEX 900 UP Index'
   | 'DEX 900 DOWN Index'
   | 'DEX 1200 UP Index'
-  | 'DEX 1200 DOWN Index';
+  | 'DEX 1200 DOWN Index'
+  // Drift Switching Indices
+  | 'Drift Switch Index 10'
+  | 'Drift Switch Index 20'
+  | 'Drift Switch Index 30'
+  // Daily Reset Indices
+  | 'Bull Market Index'
+  | 'Bear Market Index'
+  // Multi Step Indices
+  | 'Multi Step Index 200'
+  | 'Multi Step Index 250'
+  | 'Multi Step Index 300'
+  | 'Multi Step Index 500'
+  // Skew Step Indices
+  | 'Skew Step Index 80/20'
+  | 'Skew Step Index 90/10'
+  // Trek Indices
+  | 'Trek UP Index'
+  | 'Trek DOWN Index'
+  // Volatility Switch Indices
+  | 'Volatility Switch 10/50 Index'
+  | 'Volatility Switch 10/100 Index'
+  | 'Volatility Switch 50/100 Index';
 
 export interface SymbolData {
   name: SymbolName;

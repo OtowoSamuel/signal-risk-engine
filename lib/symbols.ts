@@ -361,6 +361,240 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     typicalPrice: 23000,
     contractSize: 1,
     description: 'Small rises and major drops every 10 minutes on average (downward bias)'
+  },
+
+  // DRIFT SWITCHING INDICES - Indices that switch between bullish, bearish, or sideways trends
+  'Drift Switch Index 10': {
+    name: 'Drift Switch Index 10',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 8000,
+    contractSize: 1,
+    description: 'Switches between trends at average duration of 10 minutes'
+  },
+  'Drift Switch Index 20': {
+    name: 'Drift Switch Index 20',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 12000,
+    contractSize: 1,
+    description: 'Switches between trends at average duration of 20 minutes'
+  },
+  'Drift Switch Index 30': {
+    name: 'Drift Switch Index 30',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 16000,
+    contractSize: 1,
+    description: 'Switches between trends at average duration of 30 minutes'
+  },
+
+  // DAILY RESET INDICES - Simulate bull/bear trends that reset daily
+  'Bull Market Index': {
+    name: 'Bull Market Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 15000,
+    contractSize: 1,
+    description: 'Simulates rising market trends, resets daily to baseline'
+  },
+  'Bear Market Index': {
+    name: 'Bear Market Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 15000,
+    contractSize: 1,
+    description: 'Simulates falling market trends, resets daily to baseline'
+  },
+
+  // HYBRID CRASH/BOOM - Crash/Boom with 20% volatility boost
+  'Crash 600 Index': {
+    name: 'Crash 600 Index',
+    pointValue: 0.1,
+    minLot: 1.0,
+    maxLot: 100,
+    lotStep: 1.0,
+    leverage: 1000,
+    typicalPrice: 1000,
+    contractSize: 1,
+    description: 'Index with average 1 crash every 600 ticks'
+  },
+  'Crash 900 Index': {
+    name: 'Crash 900 Index',
+    pointValue: 0.1,
+    minLot: 1.0,
+    maxLot: 100,
+    lotStep: 1.0,
+    leverage: 1000,
+    typicalPrice: 1300,
+    contractSize: 1,
+    description: 'Index with average 1 crash every 900 ticks'
+  },
+  'Boom 600 Index': {
+    name: 'Boom 600 Index',
+    pointValue: 0.1,
+    minLot: 1.0,
+    maxLot: 100,
+    lotStep: 1.0,
+    leverage: 1000,
+    typicalPrice: 6500000,
+    contractSize: 1,
+    description: 'Index with average 1 boom (spike up) every 600 ticks'
+  },
+  'Boom 900 Index': {
+    name: 'Boom 900 Index',
+    pointValue: 0.1,
+    minLot: 1.0,
+    maxLot: 100,
+    lotStep: 1.0,
+    leverage: 1000,
+    typicalPrice: 9200000,
+    contractSize: 1,
+    description: 'Index with average 1 boom (spike up) every 900 ticks'
+  },
+
+  // MULTI STEP INDICES - Multiple step sizes with varying probabilities
+  'Multi Step Index 200': {
+    name: 'Multi Step Index 200',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 500,
+    typicalPrice: 18000,
+    contractSize: 1,
+    description: 'Steps of 0.1 with occasional 0.2 movements'
+  },
+  'Multi Step Index 250': {
+    name: 'Multi Step Index 250',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 500,
+    typicalPrice: 22000,
+    contractSize: 1,
+    description: 'Steps of 0.1 with occasional 0.25 movements'
+  },
+  'Multi Step Index 300': {
+    name: 'Multi Step Index 300',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 500,
+    typicalPrice: 26000,
+    contractSize: 1,
+    description: 'Steps of 0.1 with occasional 0.3 movements'
+  },
+  'Multi Step Index 500': {
+    name: 'Multi Step Index 500',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 500,
+    typicalPrice: 35000,
+    contractSize: 1,
+    description: 'Steps of 0.1 with occasional 0.5 movements'
+  },
+
+  // SKEW STEP INDICES - Asymmetric step sizes and probabilities
+  'Skew Step Index 80/20': {
+    name: 'Skew Step Index 80/20',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 500,
+    typicalPrice: 14000,
+    contractSize: 1,
+    description: '80% probability for small shifts, 20% for sharp movements'
+  },
+  'Skew Step Index 90/10': {
+    name: 'Skew Step Index 90/10',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 500,
+    typicalPrice: 16000,
+    contractSize: 1,
+    description: '90% probability for small shifts, 10% for sharp movements'
+  },
+
+  // TREK INDICES - Directional bias with 30% volatility
+  'Trek UP Index': {
+    name: 'Trek UP Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 20000,
+    contractSize: 1,
+    description: '30% volatility market with upward directional bias'
+  },
+  'Trek DOWN Index': {
+    name: 'Trek DOWN Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 20000,
+    contractSize: 1,
+    description: '30% volatility market with downward directional bias'
+  },
+
+  // VOLATILITY SWITCH INDICES - Switching volatility levels
+  'Volatility Switch 10/50 Index': {
+    name: 'Volatility Switch 10/50 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 9000,
+    contractSize: 1,
+    description: 'Switches between 10% and 50% volatility every 5-60 minutes'
+  },
+  'Volatility Switch 10/100 Index': {
+    name: 'Volatility Switch 10/100 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 13000,
+    contractSize: 1,
+    description: 'Switches between 10% and 100% volatility every 5-60 minutes'
+  },
+  'Volatility Switch 50/100 Index': {
+    name: 'Volatility Switch 50/100 Index',
+    pointValue: 0.1,
+    minLot: 0.1,
+    maxLot: 100,
+    lotStep: 0.1,
+    leverage: 1000,
+    typicalPrice: 18000,
+    contractSize: 1,
+    description: 'Switches between 50% and 100% volatility every 5-60 minutes'
   }
 };
 
