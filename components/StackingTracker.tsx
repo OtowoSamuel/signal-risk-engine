@@ -118,7 +118,7 @@ export default function StackingTracker() {
                 min="0.1"
                 max="100"
                 step="0.1"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-gray-900"
               />
             </div>
             
@@ -130,7 +130,7 @@ export default function StackingTracker() {
                 onChange={(e) => setNewPosition({ ...newPosition, stopLoss: parseInt(e.target.value) || 50 })}
                 min="1"
                 max="1000"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-gray-900"
               />
             </div>
           </div>
