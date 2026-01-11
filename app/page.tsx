@@ -112,13 +112,13 @@ export default function Home() {
               {/* Trade Analysis - Bento Grid (Strategy + Metrics Side-by-Side) */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Left: Stacking Strategy */}
-                <div className="rounded-xl p-6 border border-[#2B3139] bg-gradient-to-br from-[#161A1E] to-[#0F1215] backdrop-blur-xl">
+                <div className="rounded-xl p-6 border border-[#2B3139] bg-[#161A1E] backdrop-blur-xl">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 label-text">Stacking Strategy</h3>
                   <TradeCalculator displayMode="stacking-result-only" />
                 </div>
                 
                 {/* Right: Risk Metrics */}
-                <div className="rounded-xl p-6 border border-[#2B3139] bg-gradient-to-br from-[#161A1E] to-[#0F1215] backdrop-blur-xl">
+                <div className="rounded-xl p-6 border border-[#2B3139] bg-[#161A1E] backdrop-blur-xl">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 label-text">Risk Analysis</h3>
                   <TradeCalculator displayMode="gauges-only" />
                 </div>

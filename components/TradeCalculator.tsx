@@ -102,7 +102,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               id="symbol"
               value={selectedSymbol}
               onChange={(e) => setSelectedSymbol(e.target.value as SymbolName)}
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"
             >
               {getSymbolNames().map((name) => (
                 <option key={name} value={name} className="bg-gray-900 text-white">
@@ -125,7 +125,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               min="0"
               step="0.01"
               placeholder="4500"
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white mono-numbers transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white mono-numbers transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"
             />
           </div>
 
@@ -142,7 +142,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               min="0"
               step="0.01"
               placeholder="4472.29"
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white mono-numbers transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white mono-numbers transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"
             />
           </div>
 
@@ -177,7 +177,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
           <div className="h-full flex flex-col justify-center">
             <div className="flex items-baseline justify-center gap-3 mb-4">
-              <p className="text-7xl font-bold text-white mono-numbers value-text leading-none">
+              <p className="text-7xl font-bold text-white mono-numbers value-text leading-none animate-value">
                 {calculationResult.stackingInfo.positionsToStack || 0}
               </p>
               <p className="text-xl font-medium text-gray-300 label-text">{calculationResult.stackingInfo.positionsToStack === 1 ? 'position' : 'positions'}</p>
@@ -215,9 +215,9 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
           <div className="space-y-3">
             {/* Margin Required */}
-            <div className="rounded-lg p-3 border border-[#2B3139] bg-gradient-to-br from-[#161A1E]/80 to-[#0F1215]/80 backdrop-blur-sm">
+            <div className="rounded-lg p-3 border border-[#2B3139] bg-[#161A1E] backdrop-blur-sm">
               <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 label-text">Margin Required</p>
-              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2">
+              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value">
                 ${calculationResult.marginRequired.toFixed(2)}
               </p>
               <div className="space-y-1">
@@ -242,9 +242,9 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
             </div>
 
             {/* Risk Amount */}
-            <div className="rounded-lg p-3 border border-[#2B3139] bg-gradient-to-br from-[#161A1E]/80 to-[#0F1215]/80 backdrop-blur-sm">
+            <div className="rounded-lg p-3 border border-[#2B3139] bg-[#161A1E] backdrop-blur-sm">
               <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 label-text">Risk Amount</p>
-              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2">
+              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value">
                 ${calculationResult.riskAmount.toFixed(2)}
               </p>
               <div className="space-y-1">
@@ -274,10 +274,10 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                 ? 'bg-red-500/20 border-red-500/50 animate-pulse critical-glow' 
                 : calculationResult.drawdownBufferPercentage < 50 
                 ? 'bg-amber-500/15 border-amber-500/30 warning-glow' 
-                : 'border-[#2B3139] bg-gradient-to-br from-[#161A1E]/80 to-[#0F1215]/80'
+                : 'border-[#2B3139] bg-[#161A1E]'
             }`}>
               <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 label-text">Drawdown Buffer</p>
-              <p className={`text-xl font-semibold mono-numbers value-text mb-2 ${
+              <p className={`text-xl font-semibold mono-numbers value-text mb-2 animate-value ${
                 calculationResult.drawdownBufferPercentage < 20 
                   ? 'text-red-400' 
                   : calculationResult.drawdownBufferPercentage < 50 
