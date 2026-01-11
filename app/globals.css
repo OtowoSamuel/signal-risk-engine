@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fintech Dark Theme */
+  --background: #0B0E11;
+  --foreground: #E5E7EB;
+  --card-bg: rgba(17, 24, 39, 0.6);
+  --card-border: rgba(55, 65, 81, 0.3);
+  
+  /* Trading Colors */
+  --profit-green: #10B981;
+  --risk-red: #EF4444;
+  --trading-blue: #2962FF;
+  --warning-amber: #F59E0B;
+  
+  /* Glass Effect */
+  --glass-bg: rgba(31, 41, 55, 0.4);
+  --glass-border: rgba(75, 85, 99, 0.2);
 }
 
 @theme inline {
@@ -12,15 +25,42 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Glassmorphism Card Base */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Mono-spaced Numbers */
+.mono-numbers {
+  font-family: var(--font-geist-mono), 'JetBrains Mono', 'Fira Code', monospace;
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+
+/* Smooth animations */
+* {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* Status glow effects */
+.glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(41, 98, 255, 0.3);
 }

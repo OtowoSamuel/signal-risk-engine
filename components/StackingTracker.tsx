@@ -66,23 +66,23 @@ export default function StackingTracker() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="glass-card rounded-xl p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-bold text-white">
           Open Positions
         </h2>
         <div className="flex gap-2">
           {openPositions.length > 0 && (
             <button
               onClick={clearPositions}
-              className="text-sm text-red-600 hover:text-red-700"
+              className="text-sm text-red-400 hover:text-red-300 transition-colors px-3 py-1 rounded-lg bg-red-900/20 border border-red-500/30 font-medium"
             >
               Clear All
             </button>
           )}
           <button
             onClick={() => setIsAddingPosition(!isAddingPosition)}
-            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all glow-blue font-semibold shadow-lg"
           >
             {isAddingPosition ? 'Cancel' : '+ Add Position'}
           </button>
@@ -91,26 +91,25 @@ export default function StackingTracker() {
 
       {/* Add Position Form */}
       {isAddingPosition && (
-        <div className="mb-6 bg-gray-50 rounded-lg p-4 space-y-3">
-          <h3 className="text-sm font-medium text-gray-700">Add Open Position</h3>
+        <div className="mb-6 bg-gray-900/30 rounded-lg p-4 space-y-3 border border-gray-700/30">
+          <h3 className="text-sm font-medium text-gray-300">Add Open Position</h3>
           
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Symbol</label>
+              <label className="block text-xs text-gray-400 mb-1">Symbol</label>
               <select
                 value={newPosition.symbol}
                 onChange={(e) => setNewPosition({ ...newPosition, symbol: e.target.value as SymbolName })}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white text-gray-900"
-                style={{ color: '#111827' }}
+                className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700/50 rounded text-sm text-white"
               >
                 {symbolNames.map((symbol) => (
-                  <option key={symbol} value={symbol} className="text-gray-900 bg-white">{symbol}</option>
+                  <option key={symbol} value={symbol} className="bg-gray-900 text-white">{symbol}</option>
                 ))}
               </select>
             </div>
             
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Lot Size</label>
+              <label className="block text-xs text-gray-400 mb-1">Lot Size</label>
               <input
                 type="number"
                 value={newPosition.lotSize}
@@ -118,26 +117,26 @@ export default function StackingTracker() {
                 min="0.1"
                 max="100"
                 step="0.1"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-gray-900"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700/50 rounded text-sm text-white font-mono"
               />
             </div>
             
             <div>
-              <label className="block text-xs text-gray-600 mb-1">SL (Points)</label>
+              <label className="block text-xs text-gray-400 mb-1">SL (Points)</label>
               <input
                 type="number"
                 value={newPosition.stopLoss}
                 onChange={(e) => setNewPosition({ ...newPosition, stopLoss: parseInt(e.target.value) || 50 })}
                 min="1"
                 max="1000"
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-gray-900"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700/50 rounded text-sm text-white font-mono"
               />
             </div>
           </div>
           
           <button
             onClick={handleAddPosition}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg"
+            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white text-sm font-medium py-2 rounded-lg transition-all"
           >
             Add Position
           </button>
@@ -150,11 +149,11 @@ export default function StackingTracker() {
           {openPositions.map((position) => (
             <div
               key={position.id}
-              className="flex items-center justify-between bg-gray-50 rounded-lg p-4"
+              className="flex items-center justify-between elevated-card rounded-lg p-4"
             >
               <div className="flex-1">
-                <p className="font-medium text-gray-900">{position.symbol}</p>
-                <div className="flex gap-4 text-xs text-gray-600 mt-1">
+                <p className="font-medium text-white label-text">{position.symbol}</p>
+                <div className="flex gap-4 text-xs text-gray-400 mt-1 font-mono mono-numbers">
                   <span>Lot: {position.lotSize.toFixed(2)}</span>
                   <span>SL: {position.stopLoss} pts</span>
                   <span>Margin: ${position.marginUsed.toFixed(2)}</span>
@@ -172,9 +171,9 @@ export default function StackingTracker() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-gray-400">
           <svg
-            className="mx-auto h-12 w-12 text-gray-400 mb-3"
+            className="mx-auto h-12 w-12 text-gray-600 mb-3"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -187,24 +186,29 @@ export default function StackingTracker() {
             />
           </svg>
           <p className="text-sm">No open positions tracked</p>
-          <p className="text-xs mt-1">Add positions to monitor your stacking risk</p>
+          <p className="text-xs mt-1 text-gray-500">Add positions to monitor your stacking risk</p>
         </div>
       )}
 
       {/* Stacking Analysis */}
       {openPositions.length > 0 && (
-        <div className="border-t border-gray-200 pt-6 space-y-4">
-          <h3 className="text-sm font-medium text-gray-700">Stacking Analysis</h3>
+        <div className="border-t border-gray-700/30 pt-6 space-y-4">
+          <h3 className="text-sm font-medium text-gray-300">Stacking Analysis</h3>
           
           {/* Progress Bar */}
           <div>
-            <div className="flex justify-between text-xs text-gray-600 mb-2">
+            <div className="flex justify-between text-xs text-gray-400 mb-2">
               <span>Margin Usage</span>
-              <span className="font-medium">{stackingAnalysis.totalMarginPercentage.toFixed(0)}%</span>
+              <span className="font-medium font-mono">{stackingAnalysis.totalMarginPercentage.toFixed(0)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-gray-700/30 rounded-full h-3">
               <div
-                className={`h-3 rounded-full transition-all ${getWarningColorClass(stackingAnalysis.warningLevel)}`}
+                className={`h-3 rounded-full transition-all ${
+                  stackingAnalysis.warningLevel === 'critical' ? 'bg-red-500 glow-red' :
+                  stackingAnalysis.warningLevel === 'high' ? 'bg-orange-500' :
+                  stackingAnalysis.warningLevel === 'moderate' ? 'bg-amber-500' :
+                  'bg-[#10B981] glow-green'
+                }`}
                 style={{ width: `${Math.min(stackingAnalysis.totalMarginPercentage, 100)}%` }}
               />
             </div>
@@ -216,34 +220,34 @@ export default function StackingTracker() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-500">Total Margin Used</p>
-              <p className="text-lg font-semibold text-gray-900">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="elevated-card rounded-lg p-3">
+              <p className="text-xs text-gray-400 label-text mb-1">Total Margin Used</p>
+              <p className="text-lg font-semibold text-white mono-numbers value-text">
                 ${stackingAnalysis.totalMarginUsed.toFixed(2)}
               </p>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-500">Remaining Buffer</p>
-              <p className="text-lg font-semibold text-gray-900">
+            <div className="elevated-card rounded-lg p-3">
+              <p className="text-xs text-gray-400 label-text mb-1">Remaining Buffer</p>
+              <p className="text-lg font-semibold text-white mono-numbers value-text">
                 ${stackingAnalysis.remainingBuffer.toFixed(2)}
               </p>
             </div>
           </div>
 
           {/* Warning Message */}
-          <div className={`rounded-lg border-2 p-4 ${
-            stackingAnalysis.warningLevel === 'critical' ? 'bg-red-50 border-red-300' :
-            stackingAnalysis.warningLevel === 'high' ? 'bg-orange-50 border-orange-300' :
-            stackingAnalysis.warningLevel === 'moderate' ? 'bg-yellow-50 border-yellow-300' :
-            'bg-green-50 border-green-300'
+          <div className={`glass-card rounded-lg border-2 p-4 ${
+            stackingAnalysis.warningLevel === 'critical' ? 'border-red-500/50 bg-red-500/10' :
+            stackingAnalysis.warningLevel === 'high' ? 'border-orange-500/50 bg-orange-500/10' :
+            stackingAnalysis.warningLevel === 'moderate' ? 'border-amber-500/50 bg-amber-500/10' :
+            'border-[#10B981]/50 bg-[#10B981]/10'
           }`}>
             <p className={`text-sm font-medium ${
-              stackingAnalysis.warningLevel === 'critical' ? 'text-red-800' :
-              stackingAnalysis.warningLevel === 'high' ? 'text-orange-800' :
-              stackingAnalysis.warningLevel === 'moderate' ? 'text-yellow-800' :
-              'text-green-800'
+              stackingAnalysis.warningLevel === 'critical' ? 'text-red-400' :
+              stackingAnalysis.warningLevel === 'high' ? 'text-orange-400' :
+              stackingAnalysis.warningLevel === 'moderate' ? 'text-amber-400' :
+              'text-[#10B981]'
             }`}>
               {getWarningMessage()}
             </p>

@@ -36,29 +36,29 @@ export default function AccountSetup() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-900">
+    <div className="glass-card rounded-xl p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold text-white">
           Account Settings
         </h2>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="text-sm text-[#2962FF] hover:text-[#2962FF]/80 transition-colors"
         >
-          {isExpanded ? 'Collapse' : 'Expand'}
+          {isExpanded ? '▼ Collapse' : '▶ Expand'}
         </button>
       </div>
 
       {/* Summary View */}
       {!isExpanded && (
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500">MT5 Balance</p>
-            <p className="font-medium text-gray-900">${settings.mt5Balance}</p>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-gray-900/30 rounded-lg p-3 border border-gray-700/30">
+            <p className="text-gray-400 text-xs mb-1">MT5 Balance</p>
+            <p className="font-mono text-xl font-bold text-white">${settings.mt5Balance}</p>
           </div>
-          <div>
-            <p className="text-gray-500">Target Margin</p>
-            <p className="font-medium text-gray-900">{settings.targetMarginPercent}%</p>
+          <div className="bg-gray-900/30 rounded-lg p-3 border border-gray-700/30">
+            <p className="text-gray-400 text-xs mb-1">Target Margin</p>
+            <p className="font-mono text-xl font-bold text-[#2962FF]">{settings.targetMarginPercent}%</p>
           </div>
         </div>
       )}
@@ -68,51 +68,57 @@ export default function AccountSetup() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* MT5 Balance */}
           <div>
-            <label htmlFor="mt5Balance" className="block text-sm font-medium text-gray-700 mb-1">
-              MT5 Account Balance ($)
+            <label htmlFor="mt5Balance" className="block text-sm font-medium text-gray-300 mb-2">
+              MT5 Account Balance
             </label>
-            <input
-              type="number"
-              id="mt5Balance"
-              value={settings.mt5Balance}
-              onChange={(e) => handleChange('mt5Balance', parseFloat(e.target.value) || 0)}
-              min="1"
-              max="100000"
-              step="0.01"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-gray-900"
-              placeholder="10"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Amount you transferred to MT5 for this trade
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">$</span>
+              <input
+                type="number"
+                id="mt5Balance"
+                value={settings.mt5Balance}
+                onChange={(e) => handleChange('mt5Balance', parseFloat(e.target.value) || 0)}
+                min="1"
+                max="100000"
+                step="1"
+                className="w-full pl-10 pr-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text"
+                placeholder="10.00"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Amount transferred to MT5 for trading
             </p>
           </div>
 
           {/* Target Margin Percentage */}
           <div>
-            <label htmlFor="targetMargin" className="block text-sm font-medium text-gray-700 mb-1">
-              Target Margin Usage (%)
+            <label htmlFor="targetMargin" className="block text-sm font-medium text-gray-300 mb-2">
+              Target Margin Usage
             </label>
-            <input
-              type="number"
-              id="targetMargin"
-              value={settings.targetMarginPercent}
-              onChange={(e) => handleChange('targetMarginPercent', parseFloat(e.target.value) || 35)}
-              min="10"
-              max="80"
-              step="5"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-gray-900"
-              placeholder="35"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Recommended: 30-40% (leaves 60-70% as drawdown buffer)
+            <div className="relative">
+              <input
+                type="number"
+                id="targetMargin"
+                value={settings.targetMarginPercent}
+                onChange={(e) => handleChange('targetMarginPercent', parseFloat(e.target.value) || 35)}
+                min="10"
+                max="80"
+                step="5"
+                className="w-full pr-10 pl-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text"
+                placeholder="35"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">%</span>
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Recommended: 30-40% (leaves 60-70% buffer)
             </p>
           </div>
 
           {/* Error Messages */}
           {errors.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3 glow-red">
               {errors.map((error, index) => (
-                <p key={index} className="text-sm text-red-700">
+                <p key={index} className="text-sm text-red-400">
                   • {error}
                 </p>
               ))}
@@ -122,9 +128,9 @@ export default function AccountSetup() {
           {/* Save Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white font-medium py-3 px-4 rounded-lg transition-all glow-blue"
           >
-            Save Settings
+            💾 Save Settings
           </button>
         </form>
       )}

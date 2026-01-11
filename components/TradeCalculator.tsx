@@ -78,25 +78,25 @@ export default function TradeCalculator() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">
+    <div className="glass-card rounded-xl p-6">
+      <h2 className="text-2xl font-bold text-white mb-6">
         Trade Calculator
       </h2>
 
       <div className="space-y-6">
         {/* Symbol Selector */}
         <div>
-          <label htmlFor="symbol" className="block text-sm font-medium text-gray-700 mb-2">
-            Select Symbol
+          <label htmlFor="symbol" className="block text-sm font-medium text-gray-300 mb-2">
+            Symbol
           </label>
           <select
             id="symbol"
             value={selectedSymbol}
             onChange={(e) => setSelectedSymbol(e.target.value as SymbolName)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg bg-white text-gray-900"
+            className="w-full px-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-lg text-white transition-all"
           >
             {symbolNames.map((name) => (
-              <option key={name} value={name} className="text-gray-900 bg-white">
+              <option key={name} value={name} className="bg-gray-900 text-white">
                 {name}
               </option>
             ))}
@@ -105,7 +105,7 @@ export default function TradeCalculator() {
 
         {/* Entry Price Input */}
         <div>
-          <label htmlFor="entryPrice" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="entryPrice" className="block text-sm font-medium text-gray-300 mb-2">
             Entry Price
           </label>
           <input
@@ -116,16 +116,16 @@ export default function TradeCalculator() {
             min="0"
             step="0.01"
             placeholder="4500"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-gray-900"
+            className="w-full px-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers transition-all"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-400 mt-1">
             Current market price or your planned entry
           </p>
         </div>
 
         {/* Stop Loss Price Input */}
         <div>
-          <label htmlFor="slPrice" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="slPrice" className="block text-sm font-medium text-gray-300 mb-2">
             Stop Loss Price
           </label>
           <input
@@ -136,27 +136,27 @@ export default function TradeCalculator() {
             min="0"
             step="0.01"
             placeholder="4472.29"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-gray-900"
+            className="w-full px-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers transition-all"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-400 mt-1">
             Your stop loss price from signal
           </p>
         </div>
 
         {/* Auto-Calculated SL Points Display */}
         {stopLoss > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-900">
-              📊 <span className="font-semibold">Stop Loss:</span> {stopLoss.toFixed(2)} points
+          <div className="glass-card rounded-lg p-3 border border-[#2962FF]/30">
+            <p className="text-sm text-[#2962FF]">
+              <span className="font-semibold">Stop Loss:</span> <span className="mono-numbers">{stopLoss.toFixed(2)}</span> points
             </p>
           </div>
         )}
 
         {/* Input Errors */}
         {inputErrors.length > 0 && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <div className="glass-card rounded-lg p-3 border border-red-500/30">
             {inputErrors.map((error, index) => (
-              <p key={index} className="text-sm text-red-700">
+              <p key={index} className="text-sm text-red-400">
                 • {error}
               </p>
             ))}
@@ -165,94 +165,169 @@ export default function TradeCalculator() {
 
         {/* Calculation Results */}
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
-          <div className="border-t border-gray-200 pt-6 space-y-4">
+          <div className="border-t border-gray-700/30 pt-6 space-y-4">
             {/* Primary Output - STACKING INFO */}
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white">
-              <p className="text-sm opacity-90 mb-2">🎯 Stacking Strategy</p>
+            <div className="elevated-card rounded-xl p-6 border border-[#2962FF]/20 glow-blue">
+              <p className="text-sm text-[#2962FF] mb-2 font-medium label-text">Stacking Strategy</p>
               <div className="flex items-baseline justify-center gap-3 mb-4">
-                <p className="text-6xl font-bold">
+                <p className="text-6xl font-bold text-white mono-numbers value-text">
                   {calculationResult.stackingInfo.positionsToStack || 0}
                 </p>
-                <p className="text-2xl font-medium opacity-90">positions</p>
+                <p className="text-2xl font-medium text-gray-300 label-text">positions</p>
               </div>
-              <div className="bg-white/20 rounded-lg p-4 space-y-2">
+              <div className="bg-[#2962FF]/10 rounded-lg p-4 space-y-2 backdrop-blur-sm border border-[#2962FF]/20">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm opacity-90">Each position:</span>
-                  <span className="text-lg font-bold">{calculationResult.stackingInfo.minLotSize} lots</span>
+                  <span className="text-sm text-gray-300 label-text">Each position:</span>
+                  <span className="text-lg font-semibold text-white mono-numbers value-text">{calculationResult.stackingInfo.minLotSize} lots</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm opacity-90">Margin per position:</span>
-                  <span className="text-lg font-bold">${calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
+                  <span className="text-sm text-gray-300 label-text">Margin per position:</span>
+                  <span className="text-lg font-semibold text-white mono-numbers value-text">${calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center border-t border-white/20 pt-2 mt-2">
-                  <span className="text-sm opacity-90">Total margin used:</span>
-                  <span className="text-lg font-bold">
+                <div className="flex justify-between items-center border-t border-white/10 pt-2 mt-2">
+                  <span className="text-sm text-gray-300 label-text">Total margin used:</span>
+                  <span className="text-lg font-semibold text-white mono-numbers value-text">
                     ${(calculationResult.stackingInfo.positionsToStack * calculationResult.stackingInfo.marginPerPosition).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm opacity-90">Total stacked lots:</span>
-                  <span className="text-lg font-bold">{calculationResult.stackingInfo.totalStackedLots} lots</span>
+                  <span className="text-sm text-gray-300 label-text">Total stacked lots:</span>
+                  <span className="text-lg font-semibold text-white mono-numbers value-text">{calculationResult.stackingInfo.totalStackedLots} lots</span>
                 </div>
               </div>
-              <p className="text-xs text-center mt-4 opacity-80">
+              <p className="text-xs text-center mt-4 text-gray-400 label-text">
                 Open {calculationResult.stackingInfo.positionsToStack} positions at {calculationResult.stackingInfo.minLotSize} lots each on your confirmation candle
               </p>
             </div>
 
-            {/* Secondary Information */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs text-gray-500 mb-1">Margin Required</p>
-                <p className="text-lg font-semibold text-gray-900">
+            {/* Secondary Information with Progress Bars */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="elevated-card rounded-lg p-4">
+                <p className="text-xs text-gray-400 mb-2 label-text">Margin Required</p>
+                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
                   ${calculationResult.marginRequired.toFixed(2)}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(0)}% of allocated
-                </p>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400 label-text">
+                      {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}% of MT5 balance
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                        (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
+                          ? 'bg-red-500 glow-red' 
+                          : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50 
+                          ? 'bg-amber-500' 
+                          : 'bg-[#2962FF] glow-blue'
+                      }`}
+                      style={{ width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs text-gray-500 mb-1">Risk Amount</p>
-                <p className="text-lg font-semibold text-gray-900">
+              <div className="elevated-card rounded-lg p-4">
+                <p className="text-xs text-gray-400 mb-2 label-text">Risk Amount</p>
+                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
                   ${calculationResult.riskAmount.toFixed(2)}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {calculationResult.riskPercentage.toFixed(2)}% of balance
-                </p>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400 label-text">
+                      {calculationResult.riskPercentage.toFixed(2)}% of balance
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                        calculationResult.riskPercentage > 70 
+                          ? 'bg-red-500 glow-red' 
+                          : calculationResult.riskPercentage > 50 
+                          ? 'bg-amber-500' 
+                          : 'bg-[#10B981] glow-green'
+                      }`}
+                      style={{ width: `${Math.min(calculationResult.riskPercentage, 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Tertiary Information - Buffer */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-xs text-gray-500">Drawdown Buffer</p>
-                  <p className="text-sm font-medium text-gray-900">
+            {/* Tertiary Information - Buffer with Radial Gauge */}
+            <div className="elevated-card rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-xs text-gray-400 mb-2 label-text">Drawdown Buffer</p>
+                  <p className="text-2xl font-semibold text-white mono-numbers value-text">
                     ${calculationResult.drawdownBuffer.toFixed(2)}
                   </p>
+                  <p className="text-xs text-gray-400 mt-1 label-text">remaining buffer</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {calculationResult.drawdownBufferPercentage.toFixed(0)}%
-                  </p>
-                  <p className="text-xs text-gray-500">remaining buffer</p>
+                <div className="relative w-24 h-24">
+                  <svg className="transform -rotate-90 w-24 h-24">
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="40"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="transparent"
+                      className="text-gray-800/50"
+                    />
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="40"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="transparent"
+                      strokeDasharray={`${2 * Math.PI * 40}`}
+                      strokeDashoffset={`${2 * Math.PI * 40 * (1 - calculationResult.drawdownBufferPercentage / 100)}`}
+                      className={`animate-gauge ${
+                        calculationResult.drawdownBufferPercentage < 30 
+                          ? 'text-red-500' 
+                          : calculationResult.drawdownBufferPercentage < 50 
+                          ? 'text-amber-500' 
+                          : 'text-[#10B981]'
+                      }`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl font-semibold text-white mono-numbers value-text">
+                      {calculationResult.drawdownBufferPercentage.toFixed(0)}%
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Warning Messages */}
             {calculationResult.warning !== 'none' && (
-              <div className={`rounded-lg border-2 p-4 ${getWarningColor(calculationResult.warning)}`}>
-                <p className="font-medium text-sm">
+              <div className={`glass-card rounded-lg border-2 p-4 ${
+                calculationResult.warning === 'critical' 
+                  ? 'border-red-500/50 bg-red-500/10' 
+                  : calculationResult.warning === 'high' 
+                  ? 'border-orange-500/50 bg-orange-500/10' 
+                  : 'border-amber-500/50 bg-amber-500/10'
+              }`}>
+                <p className={`font-medium text-sm ${
+                  calculationResult.warning === 'critical' 
+                    ? 'text-red-400' 
+                    : calculationResult.warning === 'high' 
+                    ? 'text-orange-400' 
+                    : 'text-amber-400'
+                }`}>
                   {calculationResult.warningMessage}
                 </p>
               </div>
             )}
 
             {calculationResult.warning === 'none' && (
-              <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
-                <p className="font-medium text-sm text-green-800">
+              <div className="glass-card border-2 border-[#10B981]/50 bg-[#10B981]/10 rounded-lg p-4">
+                <p className="font-medium text-sm text-[#10B981]">
                   ✓ Safe position size with adequate buffer
                 </p>
               </div>
@@ -270,9 +345,9 @@ export default function TradeCalculator() {
 
         {/* Empty State */}
         {(!calculationResult || stopLoss === 0) && inputErrors.length === 0 && (
-          <div className="border-t border-gray-200 pt-6 text-center text-gray-500">
+          <div className="border-t border-gray-700/30 pt-6 text-center text-gray-400">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400 mb-3"
+              className="mx-auto h-12 w-12 text-gray-600 mb-3"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
