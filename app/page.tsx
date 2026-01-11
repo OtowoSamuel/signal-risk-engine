@@ -77,26 +77,36 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Disclaimer */}
           <Disclaimer />
 
-          {/* Dashboard Grid */}
-          <div className="grid grid-cols-12 gap-6">
-            {/* Account Setup - Compact Sidebar */}
-            <div className="col-span-12 lg:col-span-4">
+          {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* LEFT COLUMN: INPUT ZONE (30%) */}
+            <div className="lg:col-span-3 space-y-4">
+              {/* Account Settings - Condensed */}
               <AccountSetup />
+              
+              {/* Trade Calculator - Inputs Only */}
+              <div className="space-y-4">
+                <TradeCalculator displayMode="inputs-only" />
+              </div>
             </div>
-            
-            {/* Trade Calculator - Main */}
-            <div className="col-span-12 lg:col-span-8">
-              <TradeCalculator />
+
+            {/* RIGHT COLUMN: INTEL ZONE (70%) */}
+            <div className="lg:col-span-9 space-y-4">
+              {/* Row 1: Stacking Strategy Card */}
+              <TradeCalculator displayMode="stacking-result-only" />
+              
+              {/* Row 2: Risk Gauges (Margin, Risk, Buffer) */}
+              <TradeCalculator displayMode="gauges-only" />
+              
+              {/* Row 3: Open Positions */}
+              <StackingTracker />
             </div>
           </div>
-
-          {/* Stacking Tracker - Full Width */}
-          <StackingTracker />
         </div>
       </main>
 

@@ -36,36 +36,36 @@ export default function AccountSetup() {
   };
 
   return (
-    <div className="glass-card rounded-xl p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-white">
+    <div className="glass-card rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-bold text-white label-text">
           Account Settings
         </h2>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-sm text-[#2962FF] hover:text-[#2962FF]/80 transition-colors"
+          className="text-xs text-[#2962FF] hover:text-[#2962FF]/80 transition-colors font-medium"
         >
-          {isExpanded ? '▼ Collapse' : '▶ Expand'}
+          {isExpanded ? 'Close' : 'Edit'}
         </button>
       </div>
 
       {/* Summary View */}
       {!isExpanded && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-900/30 rounded-lg p-3 border border-gray-700/30">
-            <p className="text-gray-400 text-xs mb-1">MT5 Balance</p>
-            <p className="font-mono text-xl font-bold text-white">${settings.mt5Balance}</p>
+        <div className="space-y-2">
+          <div className="elevated-card rounded-lg p-2.5">
+            <p className="text-gray-400 text-xs mb-0.5 label-text">MT5 Balance</p>
+            <p className="mono-numbers text-base font-semibold text-white value-text">${settings.mt5Balance}</p>
           </div>
-          <div className="bg-gray-900/30 rounded-lg p-3 border border-gray-700/30">
-            <p className="text-gray-400 text-xs mb-1">Target Margin</p>
-            <p className="font-mono text-xl font-bold text-[#2962FF]">{settings.targetMarginPercent}%</p>
+          <div className="elevated-card rounded-lg p-2.5">
+            <p className="text-gray-400 text-xs mb-0.5 label-text">Target Margin</p>
+            <p className="mono-numbers text-base font-semibold text-[#2962FF] value-text">{settings.targetMarginPercent}%</p>
           </div>
         </div>
       )}
 
       {/* Expanded Form */}
       {isExpanded && (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* MT5 Balance */}
           <div>
             <label htmlFor="mt5Balance" className="block text-sm font-medium text-gray-300 mb-2">

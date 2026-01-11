@@ -12,7 +12,11 @@ import { validateCalculationInputs } from '@/lib/calculator';
 import { SymbolName } from '@/types';
 import ShowMath from './ShowMath';
 
-export default function TradeCalculator() {
+interface TradeCalculatorProps {
+  displayMode?: 'full' | 'inputs-only' | 'stacking-result-only' | 'gauges-only';
+}
+
+export default function TradeCalculator({ displayMode = 'full' }: TradeCalculatorProps) {
   const {
     selectedSymbol,
     stopLoss,
@@ -77,6 +81,264 @@ export default function TradeCalculator() {
     }
   };
 
+  // Inputs-only mode (for left sidebar)
+  if (displayMode === 'inputs-only') {
+    return (
+      <div className="glass-card rounded-xl p-6">
+        <h2 className="text-lg font-bold text-white mb-4 label-text">
+          Calculator
+        </h2>
+
+        <div className="space-y-4">
+          {/* Symbol Selector */}
+          <div>
+            <label htmlFor="symbol" className="block text-xs font-medium text-gray-300 mb-1 label-text">
+              Symbol
+            </label>
+            <select
+              id="symbol"
+              value={selectedSymbol}
+              onChange={(e) => setSelectedSymbol(e.target.value as SymbolName)}
+              className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-sm text-white transition-all"
+            >
+              {getSymbolNames().map((name) => (
+                <option key={name} value={name} className="bg-gray-900 text-white">
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Entry Price Input */}
+          <div>
+            <label htmlFor="entryPrice" className="block text-xs font-medium text-gray-300 mb-1 label-text">
+              Entry Price
+            </label>
+            <input
+              type="number"
+              id="entryPrice"
+              value={entryPrice || ''}
+              onChange={(e) => setEntryPrice(parseFloat(e.target.value) || 0)}
+              min="0"
+              step="0.01"
+              placeholder="4500"
+              className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-sm text-white mono-numbers transition-all"
+            />
+          </div>
+
+          {/* Stop Loss Price Input */}
+          <div>
+            <label htmlFor="slPrice" className="block text-xs font-medium text-gray-300 mb-1 label-text">
+              Stop Loss Price
+            </label>
+            <input
+              type="number"
+              id="slPrice"
+              value={slPrice || ''}
+              onChange={(e) => setSlPrice(parseFloat(e.target.value) || 0)}
+              min="0"
+              step="0.01"
+              placeholder="4472.29"
+              className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-sm text-white mono-numbers transition-all"
+            />
+          </div>
+
+          {/* Auto-Calculated SL Points Display */}
+          {stopLoss > 0 && (
+            <div className="elevated-card rounded-lg p-2 border border-[#2962FF]/30">
+              <p className="text-xs text-[#2962FF] label-text">
+                Stop Loss: <span className="mono-numbers font-semibold">{stopLoss.toFixed(2)}</span> points
+              </p>
+            </div>
+          )}
+
+          {/* Input Errors */}
+          {inputErrors.length > 0 && (
+            <div className="elevated-card rounded-lg p-2 border border-red-500/30">
+              {inputErrors.map((error, index) => (
+                <p key={index} className="text-xs text-red-400">
+                  • {error}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Stacking result only mode (for top right)
+  if (displayMode === 'stacking-result-only') {
+    return (
+      <>
+        {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
+          <div className="elevated-card rounded-xl p-6 border border-[#2962FF]/20 glow-blue">
+            <p className="text-sm text-[#2962FF] mb-3 font-medium label-text">Stacking Strategy</p>
+            <div className="flex items-baseline justify-center gap-3 mb-4">
+              <p className="text-6xl font-bold text-white mono-numbers value-text">
+                {calculationResult.stackingInfo.positionsToStack || 0}
+              </p>
+              <p className="text-2xl font-medium text-gray-300 label-text">positions</p>
+            </div>
+            <div className="bg-[#2962FF]/10 rounded-lg p-4 space-y-2 backdrop-blur-sm border border-[#2962FF]/20">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-300 label-text">Each position:</span>
+                <span className="text-lg font-semibold text-white mono-numbers value-text">{calculationResult.stackingInfo.minLotSize} lots</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-300 label-text">Margin per position:</span>
+                <span className="text-lg font-semibold text-white mono-numbers value-text">${calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center border-t border-white/10 pt-2 mt-2">
+                <span className="text-sm text-gray-300 label-text">Total margin used:</span>
+                <span className="text-lg font-semibold text-white mono-numbers value-text">
+                  ${(calculationResult.stackingInfo.positionsToStack * calculationResult.stackingInfo.marginPerPosition).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-300 label-text">Total stacked lots:</span>
+                <span className="text-lg font-semibold text-white mono-numbers value-text">{calculationResult.stackingInfo.totalStackedLots} lots</span>
+              </div>
+            </div>
+            <p className="text-xs text-center mt-3 text-gray-400 label-text">
+              Open {calculationResult.stackingInfo.positionsToStack} positions at {calculationResult.stackingInfo.minLotSize} lots each
+            </p>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  // Gauges only mode (for middle right)
+  if (displayMode === 'gauges-only') {
+    return (
+      <>
+        {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
+          <div className="space-y-4">
+            {/* Secondary Information with Progress Bars */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="elevated-card rounded-lg p-4">
+                <p className="text-xs text-gray-400 mb-2 label-text">Margin Required</p>
+                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
+                  ${calculationResult.marginRequired.toFixed(2)}
+                </p>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400 label-text">
+                      {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                        (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
+                          ? 'bg-red-500 glow-red' 
+                          : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50 
+                          ? 'bg-amber-500' 
+                          : 'bg-[#2962FF] glow-blue'
+                      }`}
+                      style={{ width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="elevated-card rounded-lg p-4">
+                <p className="text-xs text-gray-400 mb-2 label-text">Risk Amount</p>
+                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
+                  ${calculationResult.riskAmount.toFixed(2)}
+                </p>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400 label-text">
+                      {calculationResult.riskPercentage.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                        calculationResult.riskPercentage > 70 
+                          ? 'bg-red-500 glow-red' 
+                          : calculationResult.riskPercentage > 50 
+                          ? 'bg-amber-500' 
+                          : 'bg-[#10B981] glow-green'
+                      }`}
+                      style={{ width: `${Math.min(calculationResult.riskPercentage, 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="elevated-card rounded-lg p-4">
+                <p className="text-xs text-gray-400 mb-2 label-text">Drawdown Buffer</p>
+                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
+                  ${calculationResult.drawdownBuffer.toFixed(2)}
+                </p>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400 label-text">
+                      {calculationResult.drawdownBufferPercentage.toFixed(0)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                        calculationResult.drawdownBufferPercentage < 30 
+                          ? 'bg-red-500 glow-red' 
+                          : calculationResult.drawdownBufferPercentage < 50 
+                          ? 'bg-amber-500' 
+                          : 'bg-[#10B981] glow-green'
+                      }`}
+                      style={{ width: `${Math.min(calculationResult.drawdownBufferPercentage, 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Warning or Success Message */}
+            {calculationResult.warning !== 'none' && (
+              <div className={`glass-card rounded-lg border-2 p-4 ${
+                calculationResult.warning === 'critical' 
+                  ? 'border-red-500/50 bg-red-500/10' 
+                  : calculationResult.warning === 'high' 
+                  ? 'border-orange-500/50 bg-orange-500/10' 
+                  : 'border-amber-500/50 bg-amber-500/10'
+              }`}>
+                <p className={`font-medium text-sm ${
+                  calculationResult.warning === 'critical' 
+                    ? 'text-red-400' 
+                    : calculationResult.warning === 'high' 
+                    ? 'text-orange-400' 
+                    : 'text-amber-400'
+                }`}>
+                  {calculationResult.warningMessage}
+                </p>
+              </div>
+            )}
+
+            {calculationResult.warning === 'none' && (
+              <div className="glass-card border-2 border-[#10B981]/50 bg-[#10B981]/10 rounded-lg p-4">
+                <p className="font-medium text-sm text-[#10B981]">
+                  Safe position size with adequate buffer
+                </p>
+              </div>
+            )}
+
+            {/* Show Math - Expandable */}
+            <ShowMath
+              calculationResult={calculationResult}
+              allocatedCapital={settings.mt5Balance}
+              stopLoss={stopLoss}
+              symbol={selectedSymbol}
+            />
+          </div>
+        )}
+      </>
+    );
+  }
+
+  // Full mode (default, for backwards compatibility)
   return (
     <div className="glass-card rounded-xl p-6">
       <h2 className="text-2xl font-bold text-white mb-6">
