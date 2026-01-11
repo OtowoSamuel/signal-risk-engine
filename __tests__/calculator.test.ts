@@ -18,44 +18,44 @@ import { AccountSettings } from '../types';
 describe('Risk Calculation Engine', () => {
   describe('calculateMaxLotSize', () => {
     it('should calculate correct lot size for given inputs', () => {
-      const result = calculateMaxLotSize(10, 50, 'Volatility 75');
+      const result = calculateMaxLotSize(10, 50, 'Volatility 75 (1s) Index');
       expect(result).toBeGreaterThan(0);
       expect(result).toBeLessThanOrEqual(1.0); // With 35% cap, reasonable for $10 allocated
     });
 
     it('should return 0 for invalid inputs', () => {
-      expect(calculateMaxLotSize(0, 50, 'Volatility 75')).toBe(0);
-      expect(calculateMaxLotSize(10, 0, 'Volatility 75')).toBe(0);
+      expect(calculateMaxLotSize(0, 50, 'Volatility 75 (1s) Index')).toBe(0);
+      expect(calculateMaxLotSize(10, 0, 'Volatility 75 (1s) Index')).toBe(0);
     });
 
     it('should respect MT5 min lot size constraint', () => {
-      const result = calculateMaxLotSize(1, 1000, 'Volatility 75');
+      const result = calculateMaxLotSize(1, 1000, 'Volatility 75 (1s) Index');
       expect(result).toBeGreaterThanOrEqual(0.01);
     });
 
     it('should round to 2 decimals (MT5 format)', () => {
-      const result = calculateMaxLotSize(10, 50, 'Volatility 75');
+      const result = calculateMaxLotSize(10, 50, 'Volatility 75 (1s) Index');
       expect(result).toBe(parseFloat(result.toFixed(2)));
     });
   });
 
   describe('calculateMargin', () => {
     it('should calculate margin correctly', () => {
-      const margin = calculateMargin(0.01, 'Volatility 75', 1000);
+      const margin = calculateMargin(0.01, 'Volatility 75 (1s) Index', 1000);
       expect(margin).toBeGreaterThan(0);
       expect(margin).toBe(parseFloat(margin.toFixed(2)));
     });
 
     it('should scale with lot size', () => {
-      const margin1 = calculateMargin(0.01, 'Volatility 75', 1000);
-      const margin2 = calculateMargin(0.02, 'Volatility 75', 1000);
+      const margin1 = calculateMargin(0.01, 'Volatility 75 (1s) Index', 1000);
+      const margin2 = calculateMargin(0.02, 'Volatility 75 (1s) Index', 1000);
       expect(margin2).toBe(margin1 * 2);
     });
   });
 
   describe('calculateRiskAmount', () => {
     it('should calculate risk correctly', () => {
-      const risk = calculateRiskAmount(0.01, 50, 'Volatility 75');
+      const risk = calculateRiskAmount(0.01, 50, 'Volatility 75 (1s) Index');
       expect(risk).toBeGreaterThan(0);
       expect(risk).toBe(0.05); // 0.01 * 50 * 0.1
     });
@@ -77,14 +77,12 @@ describe('Risk Calculation Engine', () => {
 
   describe('calculatePosition', () => {
     const settings: AccountSettings = {
-      totalBalance: 100,
-      allocatedCapital: 10,
-      riskStyle: 'percentage',
-      riskPercentage: 2
+      mt5Balance: 10,
+      targetMarginPercent: 35
     };
 
     it('should return complete calculation result', () => {
-      const result = calculatePosition(settings, 50, 'Volatility 75');
+      const result = calculatePosition(settings, 50, 'Volatility 75 (1s) Index');
       
       expect(result).toHaveProperty('recommendedLotSize');
       expect(result).toHaveProperty('marginRequired');
@@ -98,14 +96,14 @@ describe('Risk Calculation Engine', () => {
     it('should set high warning when buffer is low', () => {
       const lowBufferSettings: AccountSettings = {
         ...settings,
-        allocatedCapital: 5
+        mt5Balance: 5
       };
-      const result = calculatePosition(lowBufferSettings, 10, 'Volatility 75');
+      const result = calculatePosition(lowBufferSettings, 10, 'Volatility 75 (1s) Index');
       expect(['critical', 'high', 'moderate']).toContain(result.warning);
     });
 
     it('should calculate buffer and set appropriate warning', () => {
-      const result = calculatePosition(settings, 50, 'Volatility 75');
+      const result = calculatePosition(settings, 50, 'Volatility 75 (1s) Index');
       // Verify buffer calculation exists and warning is set appropriately
       expect(result).toHaveProperty('drawdownBuffer');
       expect(result).toHaveProperty('drawdownBufferPercentage');
@@ -121,7 +119,7 @@ describe('Risk Calculation Engine', () => {
     it('should analyze single position correctly', () => {
       const positions = [{
         id: '1',
-        symbol: 'Volatility 75' as const,
+        symbol: 'Volatility 75 (1s) Index' as const,
         lotSize: 0.01,
         stopLoss: 50,
         marginUsed: 3
@@ -137,7 +135,7 @@ describe('Risk Calculation Engine', () => {
     it('should warn at high margin usage', () => {
       const positions = [{
         id: '1',
-        symbol: 'Volatility 75' as const,
+        symbol: 'Volatility 75 (1s) Index' as const,
         lotSize: 0.01,
         stopLoss: 50,
         marginUsed: 7.5
@@ -151,7 +149,7 @@ describe('Risk Calculation Engine', () => {
     it('should prevent adding position at critical levels', () => {
       const positions = [{
         id: '1',
-        symbol: 'Volatility 75' as const,
+        symbol: 'Volatility 75 (1s) Index' as const,
         lotSize: 0.01,
         stopLoss: 50,
         marginUsed: 9
@@ -166,40 +164,13 @@ describe('Risk Calculation Engine', () => {
   describe('validateAccountSettings', () => {
     it('should validate correct settings', () => {
       const settings: AccountSettings = {
-        totalBalance: 100,
-        allocatedCapital: 10,
-        riskStyle: 'percentage',
-        riskPercentage: 2
+        mt5Balance: 10,
+        targetMarginPercent: 35
       };
 
       const result = validateAccountSettings(settings);
       expect(result.valid).toBe(true);
       expect(result.errors).toHaveLength(0);
-    });
-
-    it('should reject allocated capital > total balance', () => {
-      const settings = {
-        totalBalance: 100,
-        allocatedCapital: 150,
-        riskStyle: 'percentage' as const,
-        riskPercentage: 2
-      };
-
-      const result = validateAccountSettings(settings);
-      expect(result.valid).toBe(false);
-      expect(result.errors.length).toBeGreaterThan(0);
-    });
-
-    it('should reject invalid risk percentage', () => {
-      const settings = {
-        totalBalance: 100,
-        allocatedCapital: 10,
-        riskStyle: 'percentage' as const,
-        riskPercentage: 10 // Too high
-      };
-
-      const result = validateAccountSettings(settings);
-      expect(result.valid).toBe(false);
     });
   });
 

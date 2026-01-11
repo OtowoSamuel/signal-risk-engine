@@ -24,22 +24,22 @@ const CRITICAL_STACKING_THRESHOLD = 0.85; // 85% cumulative margin
 /**
  * Calculate maximum safe lot size
  * Formula from PRD Section 7.2 (FR-2.1):
- * Max Lot Size = (Allocated Capital × 0.35) / (SL Points × Point Value)
+ * Max Lot Size = (MT5 Balance × 0.35) / (SL Points × Point Value)
  */
 export function calculateMaxLotSize(
-  allocatedCapital: number,
+  mt5Balance: number,
   slPoints: number,
   symbol: SymbolName
 ): number {
   const symbolData = getSymbol(symbol);
   
-  if (slPoints <= 0 || allocatedCapital <= 0) {
+  if (slPoints <= 0 || mt5Balance <= 0) {
     return 0;
   }
 
   // Calculate raw lot size
   const rawLotSize = 
-    (allocatedCapital * MARGIN_USAGE_CAP) / (slPoints * symbolData.pointValue);
+    (mt5Balance * MARGIN_USAGE_CAP) / (slPoints * symbolData.pointValue);
 
   // Apply MT5 constraints (FR-2.2)
   let lotSize = Math.floor(rawLotSize / symbolData.lotStep) * symbolData.lotStep;
@@ -53,17 +53,22 @@ export function calculateMaxLotSize(
 /**
  * Calculate margin required for a position
  * Formula from PRD Appendix A.2
+ * Updated for accurate Deriv synthetic indices margin calculation
  */
 export function calculateMargin(
   lotSize: number,
   symbol: SymbolName,
-  entryPrice: number = 1000 // Default approximate price for synthetics
+  entryPrice?: number // Optional: use for real-time price, otherwise use typical price
 ): number {
   const symbolData = getSymbol(symbol);
-  const contractSize = 100000; // Standard forex contract size
   
-  // Margin = (Lot Size × Contract Size × Entry Price) / Leverage
-  const margin = (lotSize * contractSize * entryPrice) / symbolData.leverage;
+  // Use provided entry price or fall back to typical price for the symbol
+  const price = entryPrice || symbolData.typicalPrice;
+  
+  // For Deriv synthetic indices:
+  // Margin = (Lot Size × Contract Size × Price) / Leverage
+  // Contract size is 1 for synthetic indices (not 100,000 like forex)
+  const margin = (lotSize * symbolData.contractSize * price) / symbolData.leverage;
   
   return Math.round(margin * 100) / 100;
 }
@@ -87,15 +92,56 @@ export function calculateRiskAmount(
  * Formula from PRD Section 7.2 (FR-2.4)
  */
 export function calculateDrawdownBuffer(
-  allocatedCapital: number,
+  mt5Balance: number,
   marginRequired: number
 ): { buffer: number; bufferPercentage: number } {
-  const buffer = allocatedCapital - marginRequired;
-  const bufferPercentage = (buffer / allocatedCapital) * 100;
+  const buffer = mt5Balance - marginRequired;
+  const bufferPercentage = (buffer / mt5Balance) * 100;
   
   return {
     buffer: Math.round(buffer * 100) / 100,
     bufferPercentage: Math.round(bufferPercentage * 100) / 100
+  };
+}
+
+/**
+ * Calculate how many minimum lot positions to stack
+ * Target: 30-40% margin usage (leaving 60-70% buffer)
+ */
+export function calculateStackingPositions(
+  mt5Balance: number,
+  symbol: SymbolName,
+  targetMarginPercentage: number = 35, // Default 35% as per user strategy
+  entryPrice?: number
+): {
+  minLotSize: number;
+  marginPerPosition: number;
+  positionsToStack: number;
+  totalMargin: number;
+  totalLotSize: number;
+} {
+  const symbolData = getSymbol(symbol);
+  const minLotSize = symbolData.minLot;
+  
+  // Calculate margin for ONE minimum lot position
+  const marginPerPosition = calculateMargin(minLotSize, symbol, entryPrice);
+  
+  // Calculate target margin in dollars
+  const targetMarginDollars = mt5Balance * (targetMarginPercentage / 100);
+  
+  // Calculate how many positions can be stacked
+  const positionsToStack = Math.floor(targetMarginDollars / marginPerPosition);
+  
+  // Calculate actual totals
+  const totalMargin = positionsToStack * marginPerPosition;
+  const totalLotSize = positionsToStack * minLotSize;
+  
+  return {
+    minLotSize,
+    marginPerPosition: Math.round(marginPerPosition * 100) / 100,
+    positionsToStack,
+    totalMargin: Math.round(totalMargin * 100) / 100,
+    totalLotSize: Math.round(totalLotSize * 100) / 100
   };
 }
 
@@ -142,7 +188,7 @@ export function calculatePosition(
 ): CalculationResult {
   // Calculate maximum safe lot size
   const recommendedLotSize = calculateMaxLotSize(
-    settings.allocatedCapital,
+    settings.mt5Balance,
     slPoints,
     symbol
   );
@@ -162,17 +208,25 @@ export function calculatePosition(
   );
 
   // Calculate risk as percentage of total balance
-  const riskPercentage = (riskAmount / settings.totalBalance) * 100;
+  const riskPercentage = (riskAmount / settings.mt5Balance) * 100;
 
   // Calculate drawdown buffer
   const { buffer, bufferPercentage } = calculateDrawdownBuffer(
-    settings.allocatedCapital,
+    settings.mt5Balance,
     marginRequired
   );
 
   // Determine warning level
   const { level: warning, message: warningMessage } = getWarningLevel(
     bufferPercentage
+  );
+
+  // Calculate stacking information
+  const stackingInfo = calculateStackingPositions(
+    settings.mt5Balance,
+    symbol,
+    settings.targetMarginPercent,
+    entryPrice
   );
 
   return {
@@ -183,7 +237,14 @@ export function calculatePosition(
     drawdownBuffer: buffer,
     drawdownBufferPercentage: bufferPercentage,
     warning,
-    warningMessage
+    warningMessage,
+    stackingInfo: {
+      minLotSize: stackingInfo.minLotSize,
+      marginPerPosition: stackingInfo.marginPerPosition,
+      positionsToStack: stackingInfo.positionsToStack,
+      targetMarginPercentage: 35,
+      totalStackedLots: stackingInfo.totalLotSize
+    }
   };
 }
 
@@ -192,7 +253,7 @@ export function calculatePosition(
  * Based on PRD Section 8 - Stacking Rules
  */
 export function analyzeStacking(
-  allocatedCapital: number,
+  mt5Balance: number,
   openPositions: OpenPosition[],
   newPosition?: { margin: number }
 ): StackingAnalysis {
@@ -202,9 +263,9 @@ export function analyzeStacking(
     0
   ) + (newPosition?.margin || 0);
 
-  const totalMarginPercentage = (totalMarginUsed / allocatedCapital) * 100;
-  const remainingBuffer = allocatedCapital - totalMarginUsed;
-  const remainingBufferPercentage = (remainingBuffer / allocatedCapital) * 100;
+  const totalMarginPercentage = (totalMarginUsed / mt5Balance) * 100;
+  const remainingBuffer = mt5Balance - totalMarginUsed;
+  const remainingBufferPercentage = (remainingBuffer / mt5Balance) * 100;
 
   // Determine warning level based on PRD Section 8.4-8.5
   let warningLevel: WarningLevel = 'none';
@@ -220,11 +281,11 @@ export function analyzeStacking(
   }
 
   // Calculate recommended max lot size for stacking
-  const availableMargin = allocatedCapital * HIGH_STACKING_THRESHOLD - 
+  const availableMargin = mt5Balance * HIGH_STACKING_THRESHOLD - 
     openPositions.reduce((sum, pos) => sum + pos.marginUsed, 0);
   
   const recommendedMaxLotSize = availableMargin > 0 
-    ? Math.max(0, availableMargin / allocatedCapital) 
+    ? Math.max(0, availableMargin / mt5Balance) 
     : 0;
 
   return {
@@ -249,41 +310,15 @@ export function validateAccountSettings(
 ): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (!settings.totalBalance || settings.totalBalance <= 0) {
+  if (!settings.mt5Balance || settings.mt5Balance <= 0) {
     errors.push('Total balance must be greater than 0');
   }
 
-  if (!settings.allocatedCapital || settings.allocatedCapital <= 0) {
+  if (!settings.mt5Balance || settings.mt5Balance <= 0) {
     errors.push('Allocated capital must be greater than 0');
   }
 
-  if (
-    settings.totalBalance &&
-    settings.allocatedCapital &&
-    settings.allocatedCapital > settings.totalBalance
-  ) {
-    errors.push('Allocated capital cannot exceed total balance');
-  }
-
-  if (settings.riskStyle === 'percentage') {
-    if (
-      !settings.riskPercentage ||
-      settings.riskPercentage <= 0 ||
-      settings.riskPercentage > 5
-    ) {
-      errors.push('Risk percentage must be between 0.1% and 5%');
-    }
-  }
-
-  if (settings.riskStyle === 'fixed') {
-    if (
-      !settings.riskAmount ||
-      settings.riskAmount <= 0 ||
-      (settings.allocatedCapital && settings.riskAmount >= settings.allocatedCapital)
-    ) {
-      errors.push('Fixed risk amount must be greater than 0 and less than allocated capital');
-    }
-  }
+  // No additional validations needed for margin-based stacking
 
   return {
     valid: errors.length === 0,
@@ -293,7 +328,7 @@ export function validateAccountSettings(
 
 export function validateCalculationInputs(
   slPoints: number,
-  allocatedCapital: number
+  mt5Balance: number
 ): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
 
@@ -301,7 +336,7 @@ export function validateCalculationInputs(
     errors.push('Stop loss must be between 1 and 1000 points');
   }
 
-  if (allocatedCapital <= 0) {
+  if (mt5Balance <= 0) {
     errors.push('Allocated capital must be greater than 0');
   }
 

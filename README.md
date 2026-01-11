@@ -1,192 +1,464 @@
-# Signal Risk Engine
+# signal-risk-engine
 
-A web-based risk management and lot size calculator for Deriv MT5 traders focusing on synthetic indices.
+User: You are a Senior Product Manager with deep experience in fintech, trading platforms, and risk management tools.
+Your task is to generate a complete, structured Product Requirements Document (PRD) based strictly on the information provided below.
 
-## Overview
+The product is an execution-support tool (not a signal provider, not auto-trading).
 
-Signal Risk Engine is an execution-support tool that helps traders calculate precise MT5 lot sizes based on allocated capital, stop-loss distance, and margin-safe stacking rules. Built specifically for Deriv's synthetic indices (Volatility 10, 25, 50, 75, 100, Step Index, and Step Dex).
+The PRD must be clear, opinionated, MVP-focused, and suitable for engineers, designers, and stakeholders.
 
-**Key Features:**
-- ✅ Precise MT5-compliant lot size calculations
-- ✅ Margin preservation model (30-40% margin usage cap)
-- ✅ Stacking risk analysis with visual warnings
-- ✅ Allocated capital model (trade with portion of balance)
-- ✅ LocalStorage persistence for settings
-- ✅ Mobile-first responsive design
-- ✅ Real-time calculation with input debouncing
+PRODUCT CONTEXT (LOCKED ASSUMPTIONS)
 
-## Technology Stack
+Include this section verbatim.
 
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS 4
-- **State Management:** Zustand with persistence
-- **Platform:** Deriv MT5
-- **Markets:** Synthetic Indices Only
+Product Type: Web-based risk & lot-size enforcement tool
+Target Platform: Web App
+Broker: Deriv
+Trading Platform: MT5
+Markets: Synthetic indices only
+Assets: All Volatility indices (entire Deriv catalog), Step Index, Step Dex
+Audience: Beginner and Intermediate traders
+Monetization Direction: Freemium (future)
+Trust Model: Black-box calculations with minimal explanation
+Signal Generation: Out of scope
+Auto-Trading: Out of scope
 
-## Getting Started
+PRD STRUCTURE TO GENERATE
+1. Product Overview
 
-### Prerequisites
+Claude should define:
 
-- Node.js 20+ 
-- npm or pnpm
+Product name (working name)
 
-### Installation
+One-paragraph problem statement
 
-```bash
-# Install dependencies
-npm install
+One-sentence product vision
 
-# Run development server
-npm run dev
-```
+Clear value proposition
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+2. User Problem & Insight
 
-### Build for Production
+Explain:
 
-```bash
-npm run build
-npm start
-```
+Why signal followers fail
 
-## Project Structure
+Why lot size mistakes and stacking kill small accounts
 
-```
-signal-risk-engine/
-├── app/                    # Next.js App Router pages
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Main application page
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   ├── AccountSetup.tsx   # Account settings form
-│   ├── TradeCalculator.tsx # Main calculator interface
-│   ├── StackingTracker.tsx # Position tracking & stacking analysis
-│   └── Disclaimer.tsx     # Legal disclaimer
-├── lib/                   # Core business logic
-│   ├── calculator.ts      # Risk calculation engine
-│   ├── symbols.ts         # MT5 symbol data for Deriv
-│   └── store.ts           # Zustand state management
-├── types/                 # TypeScript type definitions
-│   └── index.ts
-├── __tests__/            # Test files
-│   └── calculator.test.ts
-└── PRD.md                # Full Product Requirements Document
-```
+Why enforcement matters more than advice
 
-## Core Concepts
+3. Target Users & Personas
 
-### Allocated Trade Capital
+Include at least:
 
-The portion of your total account balance designated for a specific trade. Unlike traditional calculators that use 100% of balance, this reflects real-world trading where you partition capital across multiple opportunities.
+Beginner trader with $50–$200
 
-**Example:**
-- Total Balance: $100
-- Allocated Capital per Trade: $10
-- Risk calculations apply only to the $10
+Intermediate trader following Telegram signals
 
-### Margin Preservation Model
+Describe goals, pain points, behaviors
 
-Ensures initial margin usage consumes only **30-40%** of allocated capital, leaving 60-70% as a drawdown buffer. This prevents margin calls before stop-loss execution, especially critical on fast-moving synthetic indices.
+4. Core Product Philosophy
 
-### Stacking Rules
+Claude must explicitly reflect:
 
-Fixed logic for managing multiple open positions:
-- Individual positions: ≤ 30-40% margin usage
-- Cumulative positions: ≤ 70% total margin usage
-- Progressive lot size reduction for subsequent positions
-- Visual warnings at 60% (moderate), 70% (high), 85% (critical)
+- The app advises, not enforces (soft enforcement)
+- The app assumes users may allocate only part of their total balance per trade
+- Risk is defined relative to allocated capital, not entire account balance
 
-## Calculation Formulas
+5. Key Concepts (MUST BE EXPLAINED)
 
-### Max Lot Size
-```
-Max Lot Size = (Allocated Capital × 0.35) / (SL Points × Point Value)
-```
+Claude must clearly define:
 
-### Margin Required
-```
-Margin = (Lot Size × Contract Size × Entry Price) / Leverage
-```
+5.1 Allocated Trade Capital
 
-### Drawdown Buffer
-```
-Buffer = Allocated Capital - Margin Required
-Buffer % = (Buffer / Allocated Capital) × 100
-```
+Example logic:
 
-## Usage Guide
+Total balance: $100
 
-### 1. Configure Account Settings
-- Enter total MT5 account balance
-- Set allocated capital per trade (e.g., $10 from $100 balance)
-- Choose risk style (percentage or fixed amount)
+User allocates $10 per trade
 
-### 2. Calculate Position Size
-- Select synthetic index symbol
-- Enter stop-loss distance in points
-- System displays exact MT5 lot size to use
-- Copy lot size to clipboard for quick entry
+Risk calculations apply only to that $10
 
-### 3. Track Open Positions (Optional)
-- Manually add open positions
-- View cumulative margin usage
-- Get warnings before over-stacking
-- Monitor remaining buffer
+5.2 Margin Preservation Model
 
-## MT5 Symbol Data
+Stacking logic explanation:
 
-| Symbol | Point Value | Leverage | Min Lot | Max Lot |
-|--------|-------------|----------|---------|---------|
-| Volatility 10 | $0.10 | 1:1000 | 0.01 | 100 |
-| Volatility 25 | $0.10 | 1:1000 | 0.01 | 100 |
-| Volatility 50 | $0.10 | 1:1000 | 0.01 | 100 |
-| Volatility 75 | $0.10 | 1:1000 | 0.01 | 100 |
-| Volatility 100 | $0.10 | 1:1000 | 0.01 | 100 |
-| Step Index | $0.10 | 1:500 | 0.01 | 100 |
-| Step Dex | $0.10 | 1:500 | 0.01 | 100 |
+Only $3–$4 used as margin
 
-## Roadmap
+Remaining capital buffers drawdown
 
-### Phase 2 (Post-MVP)
-- [ ] Telegram signal parsing integration
-- [ ] Position tracking dashboard with MT5 sync
-- [ ] Historical calculation log
-- [ ] Export calculation reports
+Prevents margin calls during volatility
 
-### Phase 3
-- [ ] MT5 plugin/API integration
-- [ ] Trade journaling features
-- [ ] Multi-broker support
+6. Core Use Cases (MVP)
 
-### Phase 4
-- [ ] Freemium monetization (Premium features)
-- [ ] Community features
-- [ ] Educational content library
+Claude should document flows such as:
 
-## Disclaimer
+User sets account balance
 
-**⚠️ IMPORTANT:** This tool is for educational purposes only and does not constitute financial advice. All trading involves risk. You are solely responsible for your trading decisions. The calculations are based on current Deriv MT5 settings which may change. Always verify lot sizes before executing trades.
+User defines per-trade capital allocation
 
-## License
+User selects symbol
 
-MIT License
+User inputs SL
 
-## Support
+System outputs exact MT5 lot size
 
-- Documentation: See PRD.md for complete product requirements
-- Issues: Open an issue in the repository
+System displays risk warning if violated
 
-## Acknowledgments
+7. Functional Requirements
 
-- Built with Next.js, React, and TypeScript
-- State management by Zustand
-- Styling with Tailwind CSS
-- Designed specifically for Deriv MT5 traders
+Claude must break this into:
+
+7.1 Account Setup
+
+Balance
+
+Allocated capital per trade
+
+Risk style (percentage or fixed amount)
+
+7.2 Risk Engine
+
+Risk per trade
+
+Drawdown buffer logic
+
+Stacking rules (fixed logic)
+
+7.3 Trade Calculator
+
+Symbol selection (all vol indices + step)
+
+SL input
+
+Output: exact lot size (MT5-compliant)
+
+8. Stacking Rules (FIXED LOGIC – NOT CUSTOM)
+
+Claude must reflect this logic:
+
+Stacking is permitted only when:
+- Initial margin usage is <= 30–40% of allocated trade capital
+- Remaining capital must cover expected drawdown
+- Stacks reduce allowable lot size progressively
+
+9. UX / UI Principles
+
+Include:
+
+Minimal UI
+
+No charts
+
+Numeric, form-based interface
+
+Clear warnings (not blocking)
+
+10. Non-Functional Requirements
+
+Claude should include:
+
+Calculation accuracy
+
+Deterministic outputs
+
+Fast response time
+
+MT5 lot-size precision limits
+
+11. Out of Scope (MVP)
+
+Explicitly list:
+
+Auto-execution
+
+Signal copying
+
+Account linking
+
+Performance promises
+
+AI predictions
+
+12. Metrics & Success Criteria
+
+Include:
+
+Calculator usage
+
+Risk violations shown
+
+User retention
+
+Account survival indicators
+
+13. Risks & Mitigations
+
+Claude should cover:
+
+User misunderstanding risk
+
+Over-stacking
+
+Trust in black-box system
+
+14. Future Enhancements (POST-MVP)
+
+Optional but documented:
+
+Telegram signal parsing
+
+MT5 plugin
+
+Account journaling
+
+API access
+
+OUTPUT FORMAT REQUIREMENTS
+
+
+
+- Use clear headings
+- Use concise paragraphs
+- Use bullet points where appropriate
+- Write in professional PRD tone
+- Avoid marketing fluff
+- Avoid code
+
+
+Generate the full PRD now, strictly following the structure and constraints above.
+
+YOU CAN SEARCH ONLINE IF NEEDED
+
+
+
+
+GitHub Copilot: I'll generate a comprehensive PRD for this risk management tool. Let me create the document now. 
+
+Created [](file:///home/otowo-samuel/Documents/Projects-2026/signal-risk-engine/PRD.md)
+
+I've generated a comprehensive Product Requirements Document (PRD) for the Signal Risk Engine. The document includes:
+
+**Key Highlights:**
+
+- **Clear product positioning** as an execution-support tool (not signal generation or auto-trading)
+- **Detailed personas** for beginner and intermediate traders with specific pain points
+- **Core philosophy** centered on allocated capital model and margin preservation
+- **Comprehensive functional requirements** covering account setup, risk engine, calculator interface, and stacking logic
+- **Fixed stacking rules** (30-40% initial margin, 70% cumulative cap)
+- **Non-blocking warning system** that advises but doesn't enforce
+- **MVP-focused scope** with explicit out-of-scope items
+- **Success metrics** focused on usage, retention, and account survival
+- **Risk mitigation strategies** for common failure modes
+- **Future roadmap** (Telegram integration, MT5 plugin, journaling)
+
+The PRD is structured for engineering teams to begin implementation immediately, with clear functional requirements, technical assumptions, and open questions for architecture decisions. The tone is professional, opinionated, and avoids marketing fluff per your requirements.
+
+The document has been saved to PRD.md in your workspace.
+
+Made changes.
+
+User: Okay which in the image should i use to build this, the best
+
+Workspace: Based on your PRD for the **Signal Risk Engine**, I recommend using **Claude Sonnet 4.5** (which you're currently using, as shown selected in the image).
+
+**Why Claude Sonnet 4.5 is best for this project:**
+
+1. **Complex Logic Requirements:** Your PRD involves sophisticated financial calculations (margin preservation, stacking logic, risk percentage conversions) that require strong reasoning abilities.
+
+2. **Mathematical Accuracy:** The core product depends on deterministic calculations with zero tolerance for errors. Sonnet 4.5 excels at mathematical reasoning.
+
+3. **Structured Output:** You need clean code architecture for calculation engines, input validation, and state management—Sonnet handles this well.
+
+4. **Cost-Effective for MVP:** At 1x cost, it's economical for an MVP development cycle while maintaining high quality.
+
+**Not recommended:**
+- **GPT-5.2/GPT-4:** More expensive (3x), overkill for this scope
+- **GPT-5 mini/Gemini Flash:** May struggle with complex financial logic validation
+- **Grok/Raptor:** Less proven for production-grade financial applications
+
+**For specific tasks, you might use:**
+- **GPT-5 mini (0.33x):** Frontend UI components, simple state management
+- **Claude Sonnet 4.5:** Core calculation engine, business logic, validation rules
+
+Stick with **Claude Sonnet 4.5** as your primary model for building the Signal Risk Engine MVP.
+
+User: so what prompt should i give to build from this PRD?
+
+GitHub Copilot: Here's a **structured prompt sequence** to build the Signal Risk Engine from the PRD:
 
 ---
 
-**Version:** 1.0.0 (MVP)  
-**Last Updated:** January 11, 2026  
-**Target Platform:** Deriv MT5  
-**Markets:** Synthetic Indices Only
+## **Phase 1: Project Setup & Architecture**
+
+```
+You are a senior full-stack engineer. Based on the PRD in PRD.md, create:
+
+1. Project architecture recommendation:
+   - Tech stack (React/Next.js vs Vue vs vanilla JS)
+   - State management approach
+   - File/folder structure
+   - Why this stack fits the MVP requirements
+
+2. Generate a complete project scaffold with:
+   - Package.json with dependencies
+   - Folder structure
+   - Configuration files (tsconfig, eslint, etc.)
+   - README with setup instructions
+
+Focus on: Fast development, mobile-first, minimal dependencies, easy deployment.
+```
+
+---
+
+## **Phase 2: Core Calculation Engine**
+
+```
+Build the Risk Calculation Engine module based on Section 7.2 of PRD.md.
+
+Requirements:
+1. Create a TypeScript/JavaScript module with functions for:
+   - calculateMaxLotSize(allocatedCapital, slPoints, symbolPointValue)
+   - calculateMargin(lotSize, symbol)
+   - calculateDrawdownBuffer(allocatedCapital, marginRequired)
+   - validateStackingRisk(openPositions, newPosition)
+
+2. Use the formulas from Section 7.2 and Appendix A.2
+
+3. Include:
+   - Input validation
+   - MT5 lot size constraints (min: 0.01, step: 0.01)
+   - Comprehensive unit tests with edge cases
+
+4. Symbol data structure for Deriv synthetics (V10, V25, V50, V75, V100, Step Index)
+
+Output clean, documented code with TypeScript types.
+```
+
+---
+
+## **Phase 3: UI Components**
+
+```
+Create React/Vue components for the Signal Risk Engine UI based on Section 9 (UX/UI Principles).
+
+Components needed:
+1. AccountSetup - collects balance, allocated capital, risk style (Section 7.1)
+2. TradeCalculator - symbol selector, SL input, lot size output (Section 7.3)
+3. StackingTracker - manual position tracking (Section 7.4)
+4. WarningDisplay - color-coded risk warnings (Section 8.5)
+
+Design principles from PRD:
+- Minimal, form-based interface (no charts)
+- Mobile-first (large touch targets)
+- Primary focus: large bold lot size
+- Copy-to-clipboard button
+- Non-blocking warnings (yellow/red)
+
+Use Tailwind CSS. Show me the component code for AccountSetup first.
+```
+
+---
+
+## **Phase 4: State Management**
+
+```
+Implement state management for Signal Risk Engine based on PRD Section 7.
+
+Requirements:
+1. Store in browser localStorage:
+   - User settings (balance, allocated capital, risk style)
+   - Open positions (for stacking calculations)
+
+2. Create hooks/composables for:
+   - useSettings() - persist and retrieve account settings
+   - useCalculator() - manage calculation inputs/outputs
+   - usePositions() - track open positions for stacking
+
+3. Handle:
+   - Input debouncing (300ms)
+   - Validation errors
+   - Real-time recalculation
+
+Use React Context + localStorage or Zustand. Show implementation.
+```
+
+---
+
+## **Phase 5: Integration & Testing**
+
+```
+Based on PRD.md:
+
+1. Integrate all components into a single-page app
+2. Add calculation flow from Section 6 (Core Use Cases)
+3. Implement warning logic from Section 8 (Stacking Rules)
+4. Add input validation from Section 7
+
+Then create:
+- Integration tests for complete user flows
+- Test cases from Section 12.6 (calculation accuracy audit)
+- Error handling for edge cases (Appendix C)
+
+Show me the main App component and test setup.
+```
+
+---
+
+## **Phase 6: Polish & Deployment**
+
+```
+Final MVP polish for Signal Risk Engine:
+
+1. Add disclaimer text (Section 13.5 - legal liability)
+2. Implement "Show Math" toggle (Section 13.4 mitigation)
+3. Add tooltips for "Allocated Capital" (Section 13.1 mitigation)
+4. Mobile optimization checks
+5. Accessibility (WCAG 2.1 Level A - Section 10.6)
+
+Then provide:
+- Deployment guide (Vercel/Netlify recommended)
+- Environment variables setup
+- Performance optimization checklist
+
+Show deployment configuration and final checklist.
+```
+
+---
+
+## **Alternative: Single Comprehensive Prompt**
+
+If you want to build faster with one prompt:
+
+```
+You are a senior full-stack engineer. Build a complete MVP web app from the PRD in PRD.md.
+
+**Requirements:**
+1. Tech stack: Next.js 14 (App Router), TypeScript, Tailwind CSS
+2. Single-page application (mobile-first)
+3. Implement ALL functional requirements from Section 7
+4. Use calculation formulas from Section 7.2 and Appendix A.2
+5. Follow UI principles from Section 9 (minimal, form-based)
+6. Include localStorage persistence
+7. Add unit tests for calculation engine
+8. Implement warning system from Section 8
+
+**Deliverables:**
+- Complete project scaffold
+- Core calculation engine with tests
+- All UI components (AccountSetup, TradeCalculator, StackingTracker)
+- Integration and deployment-ready code
+
+Start with project setup and folder structure. After I approve, build components one by one.
+```
+
+---
+
+## **Recommended Approach:**
+
+Use **Phase-by-Phase prompts** because:
+- ✅ Allows you to review/test each module
+- ✅ Easier to debug issues early
+- ✅ You can iterate on UI before moving forward
+- ✅ Matches PRD's MVP-focused philosophy
+
+Start with **Phase 1** now. Would you like me to proceed with that?

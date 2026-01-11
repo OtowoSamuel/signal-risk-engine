@@ -25,14 +25,24 @@ export default function TradeCalculator() {
   const { settings } = useSettings();
   const [inputErrors, setInputErrors] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
+  const [entryPrice, setEntryPrice] = useState<number>(0);
+  const [slPrice, setSlPrice] = useState<number>(0);
 
   const symbolNames = getSymbolNames();
+
+  // Auto-calculate SL in points when prices change
+  useEffect(() => {
+    if (entryPrice > 0 && slPrice > 0) {
+      const calculatedPoints = Math.abs(entryPrice - slPrice);
+      setStopLoss(Math.round(calculatedPoints * 100) / 100);
+    }
+  }, [entryPrice, slPrice, setStopLoss]);
 
   // Debounced calculation
   useEffect(() => {
     const timer = setTimeout(() => {
       if (stopLoss > 0) {
-        const validation = validateCalculationInputs(stopLoss, settings.allocatedCapital);
+        const validation = validateCalculationInputs(stopLoss, settings.mt5Balance);
         
         if (validation.valid) {
           calculate();
@@ -44,7 +54,7 @@ export default function TradeCalculator() {
     }, 300); // 300ms debounce as per PRD Section 7.3 (FR-3.4)
 
     return () => clearTimeout(timer);
-  }, [stopLoss, selectedSymbol, settings.allocatedCapital, calculate]);
+  }, [stopLoss, selectedSymbol, settings.mt5Balance, calculate]);
 
   const handleCopyLotSize = useCallback(() => {
     if (calculationResult) {
@@ -83,36 +93,64 @@ export default function TradeCalculator() {
             id="symbol"
             value={selectedSymbol}
             onChange={(e) => setSelectedSymbol(e.target.value as SymbolName)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg bg-white"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg bg-white text-gray-900"
           >
             {symbolNames.map((name) => (
-              <option key={name} value={name}>
+              <option key={name} value={name} className="text-gray-900 bg-white">
                 {name}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Stop Loss Input */}
+        {/* Entry Price Input */}
         <div>
-          <label htmlFor="stopLoss" className="block text-sm font-medium text-gray-700 mb-2">
-            Stop Loss (Points)
+          <label htmlFor="entryPrice" className="block text-sm font-medium text-gray-700 mb-2">
+            Entry Price
           </label>
           <input
             type="number"
-            id="stopLoss"
-            value={stopLoss || ''}
-            onChange={(e) => setStopLoss(parseFloat(e.target.value) || 0)}
-            min="1"
-            max="1000"
-            step="1"
-            placeholder="50"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+            id="entryPrice"
+            value={entryPrice || ''}
+            onChange={(e) => setEntryPrice(parseFloat(e.target.value) || 0)}
+            min="0"
+            step="0.01"
+            placeholder="4500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-gray-900"
           />
           <p className="text-xs text-gray-500 mt-1">
-            Enter stop loss distance in points (not pips)
+            Current market price or your planned entry
           </p>
         </div>
+
+        {/* Stop Loss Price Input */}
+        <div>
+          <label htmlFor="slPrice" className="block text-sm font-medium text-gray-700 mb-2">
+            Stop Loss Price
+          </label>
+          <input
+            type="number"
+            id="slPrice"
+            value={slPrice || ''}
+            onChange={(e) => setSlPrice(parseFloat(e.target.value) || 0)}
+            min="0"
+            step="0.01"
+            placeholder="4472.29"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg text-gray-900"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Your stop loss price from signal
+          </p>
+        </div>
+
+        {/* Auto-Calculated SL Points Display */}
+        {stopLoss > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-900">
+              📊 <span className="font-semibold">Stop Loss:</span> {stopLoss.toFixed(2)} points
+            </p>
+          </div>
+        )}
 
         {/* Input Errors */}
         {inputErrors.length > 0 && (
@@ -128,34 +166,37 @@ export default function TradeCalculator() {
         {/* Calculation Results */}
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
           <div className="border-t border-gray-200 pt-6 space-y-4">
-            {/* Primary Output - Lot Size */}
-            <div className="bg-blue-50 rounded-lg p-6 text-center">
-              <p className="text-sm text-gray-600 mb-1">MT5 Lot Size</p>
-              <p className="text-5xl font-bold text-blue-600 mb-3">
-                {calculationResult.recommendedLotSize.toFixed(2)}
-              </p>
-              <button
-                onClick={handleCopyLotSize}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
-              >
-                {copied ? (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    Copy to Clipboard
-                  </>
-                )}
-              </button>
-              <p className="text-xs text-gray-600 mt-2">
-                Use this exact value in MT5
+            {/* Primary Output - STACKING INFO */}
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+              <p className="text-sm opacity-90 mb-2">🎯 Stacking Strategy</p>
+              <div className="flex items-baseline justify-center gap-3 mb-4">
+                <p className="text-6xl font-bold">
+                  {calculationResult.stackingInfo.positionsToStack || 0}
+                </p>
+                <p className="text-2xl font-medium opacity-90">positions</p>
+              </div>
+              <div className="bg-white/20 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm opacity-90">Each position:</span>
+                  <span className="text-lg font-bold">{calculationResult.stackingInfo.minLotSize} lots</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm opacity-90">Margin per position:</span>
+                  <span className="text-lg font-bold">${calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center border-t border-white/20 pt-2 mt-2">
+                  <span className="text-sm opacity-90">Total margin used:</span>
+                  <span className="text-lg font-bold">
+                    ${(calculationResult.stackingInfo.positionsToStack * calculationResult.stackingInfo.marginPerPosition).toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm opacity-90">Total stacked lots:</span>
+                  <span className="text-lg font-bold">{calculationResult.stackingInfo.totalStackedLots} lots</span>
+                </div>
+              </div>
+              <p className="text-xs text-center mt-4 opacity-80">
+                Open {calculationResult.stackingInfo.positionsToStack} positions at {calculationResult.stackingInfo.minLotSize} lots each on your confirmation candle
               </p>
             </div>
 
@@ -167,7 +208,7 @@ export default function TradeCalculator() {
                   ${calculationResult.marginRequired.toFixed(2)}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {((calculationResult.marginRequired / settings.allocatedCapital) * 100).toFixed(0)}% of allocated
+                  {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(0)}% of allocated
                 </p>
               </div>
 
@@ -220,7 +261,7 @@ export default function TradeCalculator() {
             {/* Show Math Component */}
             <ShowMath
               calculationResult={calculationResult}
-              allocatedCapital={settings.allocatedCapital}
+              allocatedCapital={settings.mt5Balance}
               stopLoss={stopLoss}
               symbol={selectedSymbol}
             />

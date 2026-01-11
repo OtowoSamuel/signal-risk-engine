@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { usePositions, useSettings, useStackingAnalysis } from '@/lib/store';
-import { getSymbol } from '@/lib/symbols';
+import { getSymbol, getSymbolNames } from '@/lib/symbols';
 import { calculateMargin } from '@/lib/calculator';
 import { SymbolName } from '@/types';
 
@@ -16,9 +16,11 @@ export default function StackingTracker() {
   const { settings } = useSettings();
   const stackingAnalysis = useStackingAnalysis();
   
+  const symbolNames = getSymbolNames();
+  
   const [isAddingPosition, setIsAddingPosition] = useState(false);
   const [newPosition, setNewPosition] = useState({
-    symbol: 'Volatility 75' as SymbolName,
+    symbol: 'Volatility 75 (1s) Index' as SymbolName,
     lotSize: 0.01,
     stopLoss: 50
   });
@@ -34,7 +36,7 @@ export default function StackingTracker() {
     });
     
     setIsAddingPosition(false);
-    setNewPosition({ symbol: 'Volatility 75', lotSize: 0.01, stopLoss: 50 });
+    setNewPosition({ symbol: 'Volatility 75 (1s) Index', lotSize: 0.01, stopLoss: 50 });
   };
 
   const getWarningColorClass = (level: string) => {
@@ -98,10 +100,11 @@ export default function StackingTracker() {
               <select
                 value={newPosition.symbol}
                 onChange={(e) => setNewPosition({ ...newPosition, symbol: e.target.value as SymbolName })}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white text-gray-900"
+                style={{ color: '#111827' }}
               >
-                {['Volatility 10', 'Volatility 25', 'Volatility 50', 'Volatility 75', 'Volatility 100', 'Step Index', 'Step Dex'].map((symbol) => (
-                  <option key={symbol} value={symbol}>{symbol}</option>
+                {symbolNames.map((symbol) => (
+                  <option key={symbol} value={symbol} className="text-gray-900 bg-white">{symbol}</option>
                 ))}
               </select>
             </div>
@@ -111,10 +114,10 @@ export default function StackingTracker() {
               <input
                 type="number"
                 value={newPosition.lotSize}
-                onChange={(e) => setNewPosition({ ...newPosition, lotSize: parseFloat(e.target.value) || 0.01 })}
-                min="0.01"
+                onChange={(e) => setNewPosition({ ...newPosition, lotSize: parseFloat(e.target.value) || 0.1 })}
+                min="0.1"
                 max="100"
-                step="0.01"
+                step="0.1"
                 className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
               />
             </div>

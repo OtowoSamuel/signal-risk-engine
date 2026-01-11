@@ -9,8 +9,7 @@ import {
   AccountSettings,
   OpenPosition,
   SymbolName,
-  CalculationResult,
-  RiskStyle
+  CalculationResult
 } from '@/types';
 import { calculatePosition, analyzeStacking } from './calculator';
 
@@ -42,10 +41,8 @@ interface CalculatorState {
 }
 
 const defaultSettings: AccountSettings = {
-  totalBalance: 100,
-  allocatedCapital: 10,
-  riskStyle: 'percentage',
-  riskPercentage: 2
+  mt5Balance: 10,
+  targetMarginPercent: 35
 };
 
 export const useCalculatorStore = create<CalculatorState>()(
@@ -53,7 +50,7 @@ export const useCalculatorStore = create<CalculatorState>()(
     (set, get) => ({
       // Initial State
       settings: defaultSettings,
-      selectedSymbol: 'Volatility 75',
+      selectedSymbol: 'Volatility 75 (1s) Index',
       stopLoss: 50,
       entryPrice: undefined,
       calculationResult: null,
@@ -106,7 +103,7 @@ export const useCalculatorStore = create<CalculatorState>()(
       calculate: () => {
         const { settings, selectedSymbol, stopLoss, entryPrice } = get();
         
-        if (stopLoss <= 0 || settings.allocatedCapital <= 0) {
+        if (stopLoss <= 0 || settings.mt5Balance <= 0) {
           set({ calculationResult: null });
           return;
         }
@@ -226,7 +223,7 @@ export const useStackingAnalysis = () => {
   const { calculationResult } = useCalculator();
 
   return analyzeStacking(
-    settings.allocatedCapital,
+    settings.mt5Balance,
     openPositions,
     calculationResult ? { margin: calculationResult.marginRequired } : undefined
   );
