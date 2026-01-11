@@ -78,14 +78,11 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-6">
-          {/* Disclaimer */}
-          <Disclaimer />
-
+        <div className="max-w-7xl mx-auto">
           {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* LEFT COLUMN: INPUT ZONE (30%) */}
-            <div className="lg:col-span-3 space-y-4">
+            {/* LEFT COLUMN: INPUT ZONE (30%) - STICKY */}
+            <div className="lg:col-span-3 space-y-4 lg:sticky lg:top-24">
               {/* Account Settings - Condensed */}
               <AccountSetup />
               
@@ -93,17 +90,44 @@ export default function Home() {
               <div className="space-y-4">
                 <TradeCalculator displayMode="inputs-only" />
               </div>
+
+              {/* Disclaimer - Moved to sidebar bottom */}
+              <div className="glass-card rounded-lg p-3 border-l-4 border-amber-600/50 bg-amber-950/20">
+                <div className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <p className="font-semibold text-amber-400 text-xs label-text">Educational Tool</p>
+                    <p className="text-xs text-amber-200/70 leading-relaxed mt-0.5">
+                      For educational purposes only. You are solely responsible for your trading decisions.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* RIGHT COLUMN: INTEL ZONE (70%) */}
             <div className="lg:col-span-9 space-y-4">
-              {/* Row 1: Stacking Strategy Card */}
-              <TradeCalculator displayMode="stacking-result-only" />
+              {/* Trade Analysis - Unified Bento Box */}
+              <div className="rounded-xl p-6 border border-[#2B3139] bg-gradient-to-br from-[#161A1E] to-[#0F1215] backdrop-blur-xl">
+                <h3 className="text-base font-bold text-white mb-4 label-text flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#2962FF]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                  </svg>
+                  Trade Analysis</h3>
+                
+                {/* Stacking Strategy */}
+                <TradeCalculator displayMode="stacking-result-only" />
+                
+                {/* Spacer */}
+                <div className="my-4 border-t border-gray-800/50"></div>
+                
+                {/* Risk Gauges */}
+                <TradeCalculator displayMode="gauges-only" />
+              </div>
               
-              {/* Row 2: Risk Gauges (Margin, Risk, Buffer) */}
-              <TradeCalculator displayMode="gauges-only" />
-              
-              {/* Row 3: Open Positions */}
+              {/* Open Positions */}
               <StackingTracker />
             </div>
           </div>

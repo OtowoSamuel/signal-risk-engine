@@ -85,7 +85,10 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
   if (displayMode === 'inputs-only') {
     return (
       <div className="glass-card rounded-xl p-6">
-        <h2 className="text-lg font-bold text-white mb-4 label-text">
+        <h2 className="text-lg font-bold text-white mb-4 label-text flex items-center gap-2">
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zM7 8a1 1 0 000 2h.01a1 1 0 000-2H7z" />
+          </svg>
           Calculator
         </h2>
 
@@ -172,13 +175,13 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
     return (
       <>
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
-          <div className="elevated-card rounded-xl p-6 border border-[#2962FF]/20 glow-blue">
+          <div>
             <p className="text-sm text-[#2962FF] mb-3 font-medium label-text">Stacking Strategy</p>
             <div className="flex items-baseline justify-center gap-3 mb-4">
               <p className="text-6xl font-bold text-white mono-numbers value-text">
                 {calculationResult.stackingInfo.positionsToStack || 0}
               </p>
-              <p className="text-2xl font-medium text-gray-300 label-text">positions</p>
+              <p className="text-2xl font-medium text-gray-300 label-text">{calculationResult.stackingInfo.positionsToStack === 1 ? 'position' : 'positions'}</p>
             </div>
             <div className="bg-[#2962FF]/10 rounded-lg p-4 space-y-2 backdrop-blur-sm border border-[#2962FF]/20">
               <div className="flex justify-between items-center">
@@ -201,7 +204,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               </div>
             </div>
             <p className="text-xs text-center mt-3 text-gray-400 label-text">
-              Open {calculationResult.stackingInfo.positionsToStack} positions at {calculationResult.stackingInfo.minLotSize} lots each
+              Open {calculationResult.stackingInfo.positionsToStack} {calculationResult.stackingInfo.positionsToStack === 1 ? 'position' : 'positions'} at {calculationResult.stackingInfo.minLotSize} lots each
             </p>
           </div>
         )}
@@ -217,9 +220,9 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
           <div className="space-y-4">
             {/* Secondary Information with Progress Bars */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="elevated-card rounded-lg p-4">
-                <p className="text-xs text-gray-400 mb-2 label-text">Margin Required</p>
-                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
+              <div className="rounded-lg p-3.5 border border-[#2B3139] bg-gradient-to-br from-[#161A1E]/80 to-[#0F1215]/80 backdrop-blur-sm">
+                <p className="text-xs text-gray-400 mb-1.5 label-text">Margin Required</p>
+                <p className="text-xl font-semibold text-white mono-numbers value-text mb-2">
                   ${calculationResult.marginRequired.toFixed(2)}
                 </p>
                 <div className="space-y-1">
@@ -228,14 +231,14 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                       {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                  <div className="w-full bg-gray-900/50 rounded-full h-1.5">
                     <div 
                       className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                         (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
-                          ? 'bg-red-500 glow-red' 
+                          ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]' 
                           : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50 
-                          ? 'bg-amber-500' 
-                          : 'bg-[#2962FF] glow-blue'
+                          ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' 
+                          : 'bg-[#2962FF] shadow-[0_0_8px_rgba(41,98,255,0.6)]'
                       }`}
                       style={{ width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%` }}
                     ></div>
@@ -243,9 +246,9 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                 </div>
               </div>
 
-              <div className="elevated-card rounded-lg p-4">
-                <p className="text-xs text-gray-400 mb-2 label-text">Risk Amount</p>
-                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
+              <div className="rounded-lg p-3.5 border border-[#2B3139] bg-gradient-to-br from-[#161A1E]/80 to-[#0F1215]/80 backdrop-blur-sm">
+                <p className="text-xs text-gray-400 mb-1.5 label-text">Risk Amount</p>
+                <p className="text-xl font-semibold text-white mono-numbers value-text mb-2">
                   ${calculationResult.riskAmount.toFixed(2)}
                 </p>
                 <div className="space-y-1">
@@ -254,14 +257,14 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                       {calculationResult.riskPercentage.toFixed(2)}%
                     </span>
                   </div>
-                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                  <div className="w-full bg-gray-900/50 rounded-full h-1.5">
                     <div 
                       className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                         calculationResult.riskPercentage > 70 
-                          ? 'bg-red-500 glow-red' 
+                          ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]' 
                           : calculationResult.riskPercentage > 50 
-                          ? 'bg-amber-500' 
-                          : 'bg-[#10B981] glow-green'
+                          ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' 
+                          : 'bg-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.6)]'
                       }`}
                       style={{ width: `${Math.min(calculationResult.riskPercentage, 100)}%` }}
                     ></div>
@@ -269,9 +272,21 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                 </div>
               </div>
 
-              <div className="elevated-card rounded-lg p-4">
-                <p className="text-xs text-gray-400 mb-2 label-text">Drawdown Buffer</p>
-                <p className="text-2xl font-semibold text-white mono-numbers value-text mb-2">
+              <div className={`rounded-lg p-3.5 border transition-all duration-300 backdrop-blur-sm ${(
+                calculationResult.drawdownBufferPercentage < 30 
+                  ? 'bg-red-500/20 border-red-500/50 animate-pulse' 
+                  : calculationResult.drawdownBufferPercentage < 50 
+                  ? 'bg-amber-500/15 border-amber-500/30' 
+                  : 'border-[#2B3139] bg-gradient-to-br from-[#161A1E]/80 to-[#0F1215]/80'
+              )}`}>
+                <p className="text-xs text-gray-400 mb-1.5 label-text">Drawdown Buffer</p>
+                <p className={`text-xl font-semibold mono-numbers value-text mb-2 ${
+                  calculationResult.drawdownBufferPercentage < 30 
+                    ? 'text-red-400' 
+                    : calculationResult.drawdownBufferPercentage < 50 
+                    ? 'text-amber-400' 
+                    : 'text-white'
+                }`}>
                   ${calculationResult.drawdownBuffer.toFixed(2)}
                 </p>
                 <div className="space-y-1">
@@ -280,14 +295,14 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                       {calculationResult.drawdownBufferPercentage.toFixed(0)}%
                     </span>
                   </div>
-                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                  <div className="w-full bg-gray-900/50 rounded-full h-1.5">
                     <div 
                       className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                         calculationResult.drawdownBufferPercentage < 30 
-                          ? 'bg-red-500 glow-red' 
+                          ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]' 
                           : calculationResult.drawdownBufferPercentage < 50 
-                          ? 'bg-amber-500' 
-                          : 'bg-[#10B981] glow-green'
+                          ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' 
+                          : 'bg-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.6)]'
                       }`}
                       style={{ width: `${Math.min(calculationResult.drawdownBufferPercentage, 100)}%` }}
                     ></div>
@@ -295,35 +310,6 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                 </div>
               </div>
             </div>
-
-            {/* Warning or Success Message */}
-            {calculationResult.warning !== 'none' && (
-              <div className={`glass-card rounded-lg border-2 p-4 ${
-                calculationResult.warning === 'critical' 
-                  ? 'border-red-500/50 bg-red-500/10' 
-                  : calculationResult.warning === 'high' 
-                  ? 'border-orange-500/50 bg-orange-500/10' 
-                  : 'border-amber-500/50 bg-amber-500/10'
-              }`}>
-                <p className={`font-medium text-sm ${
-                  calculationResult.warning === 'critical' 
-                    ? 'text-red-400' 
-                    : calculationResult.warning === 'high' 
-                    ? 'text-orange-400' 
-                    : 'text-amber-400'
-                }`}>
-                  {calculationResult.warningMessage}
-                </p>
-              </div>
-            )}
-
-            {calculationResult.warning === 'none' && (
-              <div className="glass-card border-2 border-[#10B981]/50 bg-[#10B981]/10 rounded-lg p-4">
-                <p className="font-medium text-sm text-[#10B981]">
-                  Safe position size with adequate buffer
-                </p>
-              </div>
-            )}
 
             {/* Show Math - Expandable */}
             <ShowMath

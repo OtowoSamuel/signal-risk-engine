@@ -82,7 +82,7 @@ export default function StackingTracker() {
           )}
           <button
             onClick={() => setIsAddingPosition(!isAddingPosition)}
-            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all glow-blue font-semibold shadow-lg"
+            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all font-semibold shadow-lg shadow-[#2962FF]/30 hover:shadow-[#2962FF]/50"
           >
             {isAddingPosition ? 'Cancel' : '+ Add Position'}
           </button>
@@ -171,22 +171,24 @@ export default function StackingTracker() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-400">
+        <div className="text-center py-12 text-gray-400">
           <svg
-            className="mx-auto h-12 w-12 text-gray-600 mb-3"
+            className="mx-auto h-16 w-16 text-gray-700 mb-4 opacity-50"
             fill="none"
             stroke="currentColor"
+            strokeWidth="1"
             viewBox="0 0 24 24"
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             />
           </svg>
-          <p className="text-sm">No open positions tracked</p>
-          <p className="text-xs mt-1 text-gray-500">Add positions to monitor your stacking risk</p>
+          <p className="text-sm font-medium mb-1">No positions tracked yet</p>
+          <p className="text-xs text-gray-500 max-w-xs mx-auto">
+            Add positions manually as you open trades on MT5 to monitor your cumulative margin usage and stacking risk in real-time.
+          </p>
         </div>
       )}
 
