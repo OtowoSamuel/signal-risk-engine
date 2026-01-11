@@ -36,8 +36,8 @@ export default function AccountSetup() {
   };
 
   return (
-    <div className="glass-card rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="glass-card rounded-xl p-3.5">
+      <div className="flex items-center justify-between mb-2.5">
         <h2 className="text-sm font-bold text-white label-text flex items-center gap-2">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -54,12 +54,12 @@ export default function AccountSetup() {
 
       {/* Summary View */}
       {!isExpanded && (
-        <div className="space-y-2">
-          <div className="elevated-card rounded-lg p-2.5">
+        <div className="space-y-1.5">
+          <div className="elevated-card rounded-lg p-2">
             <p className="text-gray-400 text-xs mb-0.5 label-text">MT5 Balance</p>
             <p className="mono-numbers text-base font-semibold text-white value-text">${settings.mt5Balance}</p>
           </div>
-          <div className="elevated-card rounded-lg p-2.5">
+          <div className="elevated-card rounded-lg p-2">
             <p className="text-gray-400 text-xs mb-0.5 label-text">Target Margin</p>
             <p className="mono-numbers text-base font-semibold text-[#2962FF] value-text">{settings.targetMarginPercent}%</p>
           </div>
@@ -84,7 +84,7 @@ export default function AccountSetup() {
                 min="1"
                 max="100000"
                 step="1"
-                className="w-full pl-10 pr-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text"
+                className="w-full pl-10 pr-4 py-3 bg-[#1E2329] border border-[#2B3139] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
                 placeholder="10.00"
               />
             </div>
@@ -107,7 +107,7 @@ export default function AccountSetup() {
                 min="10"
                 max="80"
                 step="5"
-                className="w-full pr-10 pl-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text"
+                className="w-full pr-10 pl-4 py-3 bg-[#1E2329] border border-[#2B3139] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
                 placeholder="35"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">%</span>
@@ -131,7 +131,7 @@ export default function AccountSetup() {
           {/* Save Button */}
           <button
             type="submit"
-            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white font-medium py-3 px-4 rounded-lg transition-all glow-blue"
+            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white font-medium py-3 px-4 rounded-lg transition-all glow-blue active:scale-[0.98] active:shadow-[#2962FF]/40"
           >
             Save Settings
           </button>

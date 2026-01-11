@@ -82,7 +82,7 @@ export default function Home() {
           {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* LEFT COLUMN: INPUT ZONE (30%) - STICKY */}
-            <div className="lg:col-span-3 space-y-4 lg:sticky lg:top-24">
+            <div className="lg:col-span-3 space-y-4 lg:sticky lg:top-24 lg:border-r lg:border-[#2B3139] lg:pr-6">
               {/* Account Settings - Condensed */}
               <AccountSetup />
               
@@ -109,23 +109,23 @@ export default function Home() {
 
             {/* RIGHT COLUMN: INTEL ZONE (70%) */}
             <div className="lg:col-span-9 space-y-4">
-              {/* Trade Analysis - Unified Bento Box */}
-              <div className="rounded-xl p-6 border border-[#2B3139] bg-gradient-to-br from-[#161A1E] to-[#0F1215] backdrop-blur-xl">
-                <h3 className="text-base font-bold text-white mb-4 label-text flex items-center gap-2">
-                  <svg className="w-5 h-5 text-[#2962FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                  </svg>
-                  Trade Analysis</h3>
+              {/* Trade Analysis - Bento Grid (Strategy + Metrics Side-by-Side) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Left: Stacking Strategy */}
+                <div className="rounded-xl p-6 border border-[#2B3139] bg-gradient-to-br from-[#161A1E] to-[#0F1215] backdrop-blur-xl">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 label-text">Stacking Strategy</h3>
+                  <TradeCalculator displayMode="stacking-result-only" />
+                </div>
                 
-                {/* Stacking Strategy */}
-                <TradeCalculator displayMode="stacking-result-only" />
-                
-                {/* Spacer */}
-                <div className="my-4 border-t border-gray-800/50"></div>
-                
-                {/* Risk Gauges */}
-                <TradeCalculator displayMode="gauges-only" />
+                {/* Right: Risk Metrics */}
+                <div className="rounded-xl p-6 border border-[#2B3139] bg-gradient-to-br from-[#161A1E] to-[#0F1215] backdrop-blur-xl">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 label-text">Risk Analysis</h3>
+                  <TradeCalculator displayMode="gauges-only" />
+                </div>
               </div>
+
+              {/* Show Math - How We Calculate */}
+              <TradeCalculator displayMode="show-math-only" />
               
               {/* Open Positions */}
               <StackingTracker />

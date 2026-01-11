@@ -82,7 +82,7 @@ export default function StackingTracker() {
           )}
           <button
             onClick={() => setIsAddingPosition(!isAddingPosition)}
-            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all font-semibold shadow-lg shadow-[#2962FF]/30 hover:shadow-[#2962FF]/50"
+            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all font-semibold shadow-lg shadow-[#2962FF]/30 hover:shadow-[#2962FF]/50 active:scale-95 active:shadow-[#2962FF]/40"
           >
             {isAddingPosition ? 'Cancel' : '+ Add Position'}
           </button>
@@ -136,7 +136,7 @@ export default function StackingTracker() {
           
           <button
             onClick={handleAddPosition}
-            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white text-sm font-medium py-2 rounded-lg transition-all"
+            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white text-sm font-medium py-2 rounded-lg transition-all active:scale-[0.98] shadow-md hover:shadow-[#2962FF]/30"
           >
             Add Position
           </button>
@@ -145,15 +145,15 @@ export default function StackingTracker() {
 
       {/* Positions List */}
       {openPositions.length > 0 ? (
-        <div className="space-y-3 mb-6">
+        <div className="space-y-2 mb-6">
           {openPositions.map((position) => (
             <div
               key={position.id}
-              className="flex items-center justify-between elevated-card rounded-lg p-4"
+              className="flex items-center justify-between elevated-card rounded-lg p-3 hover:bg-white/5 transition-colors"
             >
               <div className="flex-1">
-                <p className="font-medium text-white label-text">{position.symbol}</p>
-                <div className="flex gap-4 text-xs text-gray-400 mt-1 font-mono mono-numbers">
+                <p className="font-medium text-white label-text text-sm">{position.symbol}</p>
+                <div className="flex gap-3 text-xs text-gray-400 mt-0.5 mono-numbers">
                   <span>Lot: {position.lotSize.toFixed(2)}</span>
                   <span>SL: {position.stopLoss} pts</span>
                   <span>Margin: ${position.marginUsed.toFixed(2)}</span>
@@ -161,7 +161,7 @@ export default function StackingTracker() {
               </div>
               <button
                 onClick={() => removePosition(position.id)}
-                className="text-red-600 hover:text-red-700 ml-4"
+                className="text-red-600 hover:text-red-700 ml-4 transition-colors active:scale-95"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -171,24 +171,35 @@ export default function StackingTracker() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 text-gray-400">
-          <svg
-            className="mx-auto h-16 w-16 text-gray-700 mb-4 opacity-50"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            />
-          </svg>
-          <p className="text-sm font-medium mb-1">No positions tracked yet</p>
-          <p className="text-xs text-gray-500 max-w-xs mx-auto">
-            Add positions manually as you open trades on MT5 to monitor your cumulative margin usage and stacking risk in real-time.
+        <div className="text-center py-16 px-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800/30 mb-4">
+            <svg
+              className="w-10 h-10 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+              />
+            </svg>
+          </div>
+          <p className="text-base font-semibold text-white mb-2 label-text">No positions tracked yet</p>
+          <p className="text-sm text-gray-400 max-w-md mx-auto mb-5 label-text leading-relaxed">
+            Track your open positions to monitor cumulative margin usage and stacking risk in real-time.
           </p>
+          <button
+            onClick={() => setIsAddingPosition(true)}
+            className="inline-flex items-center gap-2 bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-5 py-2.5 rounded-lg transition-all font-semibold text-sm shadow-lg shadow-[#2962FF]/30 hover:shadow-[#2962FF]/50 active:scale-95"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Your First Position
+          </button>
         </div>
       )}
 
