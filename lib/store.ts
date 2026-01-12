@@ -228,3 +228,45 @@ export const useStackingAnalysis = () => {
     calculationResult ? { margin: calculationResult.marginRequired } : undefined
   );
 };
+
+// Deriv API State (global, not persisted to localStorage)
+interface DerivAPIState {
+  isConnected: boolean;
+  isAuthorized: boolean;
+  account: { balance: number; currency: string; loginid: string } | null;
+  useDemo: boolean;
+  mt5Accounts: any[];
+  setConnected: (connected: boolean) => void;
+  setAuthorized: (authorized: boolean) => void;
+  setAccount: (account: { balance: number; currency: string; loginid: string } | null) => void;
+  setUseDemo: (demo: boolean) => void;
+  setMt5Accounts: (accounts: any[]) => void;
+}
+
+export const useDerivAPIStore = create<DerivAPIState>((set) => ({
+  isConnected: false,
+  isAuthorized: false,
+  account: null,
+  useDemo: false,
+  mt5Accounts: [],
+  setConnected: (connected) => {
+    console.log('🔌 Zustand: setConnected =', connected);
+    set({ isConnected: connected });
+  },
+  setAuthorized: (authorized) => {
+    console.log('🔐 Zustand: setAuthorized =', authorized);
+    set({ isAuthorized: authorized });
+  },
+  setAccount: (account) => {
+    console.log('👤 Zustand: setAccount =', account);
+    set({ account });
+  },
+  setUseDemo: (demo) => {
+    console.log('🎮 Zustand: setUseDemo =', demo);
+    set({ useDemo: demo });
+  },
+  setMt5Accounts: (accounts) => {
+    console.log('📊 Zustand: setMt5Accounts =', accounts.length, 'accounts');
+    set({ mt5Accounts: accounts });
+  },
+}));

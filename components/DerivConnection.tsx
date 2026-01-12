@@ -16,7 +16,10 @@ export default function DerivConnection() {
     account, 
     error, 
     authorize,
-    disconnect 
+    disconnect,
+    useDemo,
+    toggleAccountType,
+    mt5Accounts
   } = useDerivAPI();
 
   const [token, setToken] = useState('');
@@ -34,16 +37,30 @@ export default function DerivConnection() {
     disconnect();
   };
 
+  const hasDemo = mt5Accounts.some(acc => acc.isDemo);
+  const hasReal = mt5Accounts.some(acc => !acc.isDemo);
+
   return (
-    <div className="glass-card rounded-xl p-4 border border-[#2B3139]">
+    <div className="glass-card rounded-xl p-4 border border-[rgba(255,255,255,0.05)]">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${
-            isConnected ? 'bg-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 
+            isConnected ? 'bg-[#10B981]' : 
             isConnecting ? 'bg-amber-500 animate-pulse' : 
             'bg-gray-600'
-          }`} />
-          <h3 className="text-sm font-bold text-white label-text">Deriv API</h3>
+          }`} style={{
+            boxShadow: isConnected ? '0 0 10px rgba(16, 185, 129, 0.6)' : 'none'
+          }} />
+          <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider label-text">Deriv API</h3>
+          {isAuthorized && (hasDemo || hasReal) && (
+            <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+              useDemo 
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                : 'bg-green-500/20 text-green-400 border border-green-500/30'
+            }`}>
+              {useDemo ? 'DEMO' : 'REAL'}
+            </span>
+          )}
         </div>
         
         {isAuthorized && account && (
@@ -54,7 +71,7 @@ export default function DerivConnection() {
       </div>
 
       {error && (
-        <div className="mb-3 p-2 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-400">
+        <div className="mb-3 p-2 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-400 whitespace-pre-wrap max-h-32 overflow-y-auto">
           {error}
         </div>
       )}
@@ -62,7 +79,7 @@ export default function DerivConnection() {
       {isConnected && !isAuthorized && !showTokenInput && (
         <button
           onClick={() => setShowTokenInput(true)}
-          className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold active:scale-95"
+          className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold active:scale-95 cursor-pointer"
         >
           Connect MT5 Account
         </button>
@@ -70,19 +87,22 @@ export default function DerivConnection() {
 
       {isConnected && !isAuthorized && showTokenInput && (
         <div className="space-y-2">
+          <div className="text-xs text-gray-400 mb-2">
+            Get your token from: <a href="https://app.deriv.com/account/api-token" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">deriv.com/account/api-token</a>
+          </div>
           <input
             type="password"
             value={token}
             onChange={(e) => setToken(e.target.value)}
             placeholder="Paste your Deriv API token"
-            className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white placeholder-gray-500 focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
+            className="w-full px-3 py-2 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
             onKeyDown={(e) => e.key === 'Enter' && handleAuthorize()}
           />
           <div className="flex gap-2">
             <button
               onClick={handleAuthorize}
               disabled={!token.trim()}
-              className="flex-1 bg-[#2962FF] hover:bg-[#2962FF]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold active:scale-95"
+              className="flex-1 bg-[#2962FF] hover:bg-[#2962FF]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold active:scale-95 cursor-pointer"
             >
               Authorize
             </button>
@@ -91,7 +111,7 @@ export default function DerivConnection() {
                 setShowTokenInput(false);
                 setToken('');
               }}
-              className="px-4 py-2 bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 rounded-lg transition-all text-sm active:scale-95"
+              className="px-4 py-2 bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 rounded-lg transition-all text-sm font-medium cursor-pointer"
             >
               Cancel
             </button>
@@ -110,14 +130,44 @@ export default function DerivConnection() {
       {isAuthorized && account && (
         <div className="space-y-2">
           <div className="elevated-card rounded-lg p-2.5">
-            <p className="text-xs text-gray-400 label-text mb-0.5">Live Balance</p>
-            <p className="text-lg font-semibold text-[#10B981] mono-numbers value-text">
-              ${account.balance.toFixed(2)} {account.currency}
+            <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text mb-0.5">Live Balance</p>
+            <p className="text-lg font-semibold text-[#10B981] mono-numbers value-text fade-in">
+              <span className="text-sm opacity-70">$</span>{account.balance.toFixed(2)} <span className="text-sm opacity-70">{account.currency}</span>
             </p>
           </div>
+          
+          {(hasDemo || hasReal) && (
+            <div className="flex gap-2">
+              {hasReal && (
+                <button
+                  onClick={() => toggleAccountType(false)}
+                  className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
+                    !useDemo
+                      ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                      : 'bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 border border-[rgba(255,255,255,0.05)]'
+                  }`}
+                >
+                  Real Account
+                </button>
+              )}
+              {hasDemo && (
+                <button
+                  onClick={() => toggleAccountType(true)}
+                  className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
+                    useDemo
+                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/50'
+                      : 'bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 border border-[rgba(255,255,255,0.05)]'
+                  }`}
+                >
+                  Demo Account
+                </button>
+              )}
+            </div>
+          )}
+          
           <button
             onClick={handleDisconnect}
-            className="w-full bg-[#1E2329] hover:bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg transition-all text-sm font-medium active:scale-95"
+            className="w-full bg-[#1E2329] hover:bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg transition-all text-sm font-medium active:scale-95 cursor-pointer"
           >
             Disconnect
           </button>

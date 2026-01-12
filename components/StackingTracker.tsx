@@ -10,18 +10,15 @@ import { usePositions, useSettings, useStackingAnalysis } from '@/lib/store';
 import { getSymbol, getSymbolNames } from '@/lib/symbols';
 import { calculateMargin } from '@/lib/calculator';
 import { SymbolName } from '@/types';
-import { useDerivAPI } from '@/lib/hooks/useDerivAPI';
 
 export default function StackingTracker() {
   const { openPositions, addPosition, removePosition, clearPositions } = usePositions();
   const { settings } = useSettings();
   const stackingAnalysis = useStackingAnalysis();
-  const { isAuthorized, getOpenPositions } = useDerivAPI();
   
   const symbolNames = getSymbolNames();
   
   const [isAddingPosition, setIsAddingPosition] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
   const [newPosition, setNewPosition] = useState({
     symbol: 'Volatility 75 (1s) Index' as SymbolName,
     lotSize: 0.01,
@@ -40,33 +37,6 @@ export default function StackingTracker() {
     
     setIsAddingPosition(false);
     setNewPosition({ symbol: 'Volatility 75 (1s) Index', lotSize: 0.01, stopLoss: 50 });
-  };
-
-  const handleSyncPositions = async () => {
-    setIsSyncing(true);
-    try {
-      const positions = await getOpenPositions();
-      
-      // Clear existing positions
-      clearPositions();
-      
-      // Add positions from Deriv
-      positions.forEach(pos => {
-        // Try to match Deriv symbol to our symbol names
-        const symbol = symbolNames.find(s => s.includes(pos.symbol)) || 'Volatility 75 (1s) Index' as SymbolName;
-        
-        addPosition({
-          symbol,
-          lotSize: 0.01, // Default, Deriv portfolio doesn't always show lot size directly
-          stopLoss: 50, // Default
-          marginUsed: pos.buy_price
-        });
-      });
-    } catch (error) {
-      console.error('Failed to sync positions:', error);
-    } finally {
-      setIsSyncing(false);
-    }
   };
 
   const getWarningColorClass = (level: string) => {
@@ -102,26 +72,17 @@ export default function StackingTracker() {
           Open Positions
         </h2>
         <div className="flex gap-2">
-          {isAuthorized && (
-            <button
-              onClick={handleSyncPositions}
-              disabled={isSyncing}
-              className="text-sm text-green-400 hover:text-green-300 transition-colors px-3 py-1 rounded-lg bg-green-900/20 border border-green-500/30 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSyncing ? 'Syncing...' : '↻ Sync from Deriv'}
-            </button>
-          )}
           {openPositions.length > 0 && (
             <button
               onClick={clearPositions}
-              className="text-sm text-red-400 hover:text-red-300 transition-colors px-3 py-1 rounded-lg bg-red-900/20 border border-red-500/30 font-medium"
+              className="text-sm text-red-400 hover:text-red-300 transition-colors px-3 py-1 rounded-lg bg-red-900/20 border border-red-500/30 font-medium cursor-pointer"
             >
               Clear All
             </button>
           )}
           <button
             onClick={() => setIsAddingPosition(!isAddingPosition)}
-            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all font-semibold shadow-lg shadow-[#2962FF]/30 hover:shadow-[#2962FF]/50 active:scale-95 active:shadow-[#2962FF]/40"
+            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all font-semibold glow-blue active:scale-95 cursor-pointer"
           >
             {isAddingPosition ? 'Cancel' : '+ Add Position'}
           </button>
@@ -135,11 +96,11 @@ export default function StackingTracker() {
           
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs text-gray-400 mb-1">Symbol</label>
+              <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">Symbol</label>
               <select
                 value={newPosition.symbol}
                 onChange={(e) => setNewPosition({ ...newPosition, symbol: e.target.value as SymbolName })}
-                className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700/50 rounded text-sm text-white"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-[rgba(255,255,255,0.05)] rounded text-sm text-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 cursor-pointer"
               >
                 {symbolNames.map((symbol) => (
                   <option key={symbol} value={symbol} className="bg-gray-900 text-white">{symbol}</option>
@@ -148,7 +109,7 @@ export default function StackingTracker() {
             </div>
             
             <div>
-              <label className="block text-xs text-gray-400 mb-1">Lot Size</label>
+              <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">Lot Size</label>
               <input
                 type="number"
                 value={newPosition.lotSize}
@@ -156,26 +117,26 @@ export default function StackingTracker() {
                 min="0.1"
                 max="100"
                 step="0.1"
-                className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700/50 rounded text-sm text-white font-mono"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-[rgba(255,255,255,0.05)] rounded text-sm text-white font-mono focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
               />
             </div>
             
             <div>
-              <label className="block text-xs text-gray-400 mb-1">SL (Points)</label>
+              <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">SL (Points)</label>
               <input
                 type="number"
                 value={newPosition.stopLoss}
                 onChange={(e) => setNewPosition({ ...newPosition, stopLoss: parseInt(e.target.value) || 50 })}
                 min="1"
                 max="1000"
-                className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700/50 rounded text-sm text-white font-mono"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-[rgba(255,255,255,0.05)] rounded text-sm text-white font-mono focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
               />
             </div>
           </div>
           
           <button
             onClick={handleAddPosition}
-            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white text-sm font-medium py-2 rounded-lg transition-all active:scale-[0.98] shadow-md hover:shadow-[#2962FF]/30"
+            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white text-sm font-medium py-2 rounded-lg transition-all active:scale-95 glow-blue cursor-pointer"
           >
             Add Position
           </button>

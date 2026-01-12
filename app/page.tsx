@@ -1,6 +1,7 @@
 'use client';
 
 import { useSettings, usePositions } from '@/lib/store';
+import { useDerivAPI } from '@/lib/hooks/useDerivAPI';
 import AccountSetup from '@/components/AccountSetup';
 import TradeCalculator from '@/components/TradeCalculator';
 import StackingTracker from '@/components/StackingTracker';
@@ -10,11 +11,22 @@ import DerivConnection from '@/components/DerivConnection';
 export default function Home() {
   const { settings } = useSettings();
   const { openPositions } = usePositions();
+  const { account, isAuthorized, useDemo } = useDerivAPI();
+  
+  console.log('🏠 Home page state:', { 
+    isAuthorized, 
+    useDemo, 
+    accountBalance: account?.balance, 
+    settingsBalance: settings.mt5Balance 
+  });
+  
+  // Use live balance from Deriv if authorized, otherwise use settings balance
+  const displayBalance = isAuthorized && account?.balance ? account.balance : settings.mt5Balance;
   
   const totalMarginUsed = openPositions.reduce((sum, pos) => sum + pos.marginUsed, 0);
-  const marginPercent = (totalMarginUsed / settings.mt5Balance) * 100;
-  const drawdownBuffer = settings.mt5Balance - totalMarginUsed;
-  const bufferPercent = (drawdownBuffer / settings.mt5Balance) * 100;
+  const marginPercent = (totalMarginUsed / displayBalance) * 100;
+  const drawdownBuffer = displayBalance - totalMarginUsed;
+  const bufferPercent = (drawdownBuffer / displayBalance) * 100;
   
   return (
     <div className="min-h-screen bg-[#0B0E11]">
@@ -23,34 +35,49 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-gray-400 text-xs block mb-1 label-text">MT5 Balance</span>
-              <p className="text-white font-mono font-semibold text-base mono-numbers value-text">${settings.mt5Balance.toFixed(2)}</p>
+              <span className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider block mb-1 label-text">MT5 Balance</span>
+              <p className="text-white font-mono font-semibold text-lg mono-numbers value-text fade-in">${displayBalance.toFixed(2)}</p>
             </div>
             <div>
-              <span className="text-gray-400 text-xs block mb-1 label-text">Margin Used</span>
-              <p className={`font-mono font-semibold text-base mono-numbers value-text transition-colors duration-300 ${
+              <span className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider block mb-1 label-text">Margin Used</span>
+              <p className={`font-mono font-semibold text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
                 marginPercent > 70 ? 'text-red-400' : 
                 marginPercent > 50 ? 'text-amber-400' : 
                 marginPercent < 10 ? 'text-emerald-400' :
                 'text-emerald-300'
               }`}>
-                ${totalMarginUsed.toFixed(2)} ({marginPercent.toFixed(1)}%)
+                ${totalMarginUsed.toFixed(2)} <span className="text-sm opacity-70">({marginPercent.toFixed(1)}%)</span>
               </p>
             </div>
             <div>
-              <span className="text-gray-400 text-xs block mb-1 label-text">Buffer</span>
-              <p className={`font-mono font-semibold text-base mono-numbers value-text transition-colors duration-300 ${
+              <span className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider block mb-1 label-text">Buffer</span>
+              <p className={`font-mono font-semibold text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
                 bufferPercent < 30 ? 'text-red-400' : 
                 bufferPercent < 50 ? 'text-amber-400' : 
                 bufferPercent > 90 ? 'text-emerald-400' :
                 'text-emerald-300'
               }`}>
-                ${drawdownBuffer.toFixed(2)} ({bufferPercent.toFixed(1)}%)
+                ${drawdownBuffer.toFixed(2)} <span className="text-sm opacity-70">({bufferPercent.toFixed(1)}%)</span>
               </p>
             </div>
             <div className="flex items-center justify-end gap-2 col-span-2 lg:col-span-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-emerald-400 text-xs font-medium label-text">LIVE</span>
+              {isAuthorized ? (
+                <>
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${
+                    useDemo ? 'bg-amber-500' : 'bg-green-500'
+                  }`}></span>
+                  <span className={`text-xs font-medium label-text ${
+                    useDemo ? 'text-amber-400' : 'text-green-400'
+                  }`}>
+                    {useDemo ? 'DEMO' : 'LIVE'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-gray-600"></span>
+                  <span className="text-gray-400 text-xs font-medium label-text">OFFLINE</span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -83,7 +110,7 @@ export default function Home() {
           {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* LEFT COLUMN: INPUT ZONE (30%) - STICKY */}
-            <div className="lg:col-span-3 space-y-4 lg:sticky lg:top-24 lg:border-r lg:border-[#2B3139] lg:pr-6">
+            <div className="lg:col-span-3 space-y-6 lg:sticky lg:top-24 lg:border-r lg:border-[rgba(255,255,255,0.05)] lg:pr-6">
               {/* Deriv API Connection */}
               <DerivConnection />
               
@@ -91,7 +118,7 @@ export default function Home() {
               <AccountSetup />
               
               {/* Trade Calculator - Inputs Only */}
-              <div className="space-y-4">
+              <div>
                 <TradeCalculator displayMode="inputs-only" />
               </div>
 
@@ -112,18 +139,18 @@ export default function Home() {
             </div>
 
             {/* RIGHT COLUMN: INTEL ZONE (70%) */}
-            <div className="lg:col-span-9 space-y-4">
+            <div className="lg:col-span-9 space-y-6">
               {/* Trade Analysis - Bento Grid (Strategy + Metrics Side-by-Side) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left: Stacking Strategy */}
-                <div className="rounded-xl p-6 border border-[#2B3139] bg-[#161A1E] backdrop-blur-xl">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 label-text">Stacking Strategy</h3>
+                <div className="rounded-xl p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
+                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-4 label-text">Stacking Strategy</h3>
                   <TradeCalculator displayMode="stacking-result-only" />
                 </div>
                 
                 {/* Right: Risk Metrics */}
-                <div className="rounded-xl p-6 border border-[#2B3139] bg-[#161A1E] backdrop-blur-xl">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 label-text">Risk Analysis</h3>
+                <div className="rounded-xl p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
+                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-4 label-text">Risk Analysis</h3>
                   <TradeCalculator displayMode="gauges-only" />
                 </div>
               </div>

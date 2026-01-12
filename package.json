@@ -11,6 +11,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "metaapi.cloud-sdk": "^29.3.3",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",

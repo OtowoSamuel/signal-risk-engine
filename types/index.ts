@@ -99,6 +99,9 @@ export interface OpenPosition {
   marginUsed: number;
   entryPrice?: number;
   stopLoss: number;
+  currentPrice?: number;
+  profit?: number;
+  contractId?: number;
 }
 
 export interface CalculationResult {

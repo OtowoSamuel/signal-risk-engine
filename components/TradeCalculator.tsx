@@ -85,7 +85,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
   if (displayMode === 'inputs-only') {
     return (
       <div className="glass-card rounded-xl p-4">
-        <h2 className="text-base font-bold text-white mb-3 label-text flex items-center gap-2">
+        <h2 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3 label-text flex items-center gap-2">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zM7 8a1 1 0 000 2h.01a1 1 0 000-2H7z" />
           </svg>
@@ -95,7 +95,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
         <div className="space-y-3">
           {/* Symbol Selector */}
           <div>
-            <label htmlFor="symbol" className="block text-xs font-medium text-gray-300 mb-1.5 label-text">
+            <label htmlFor="symbol" className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 label-text">
               Symbol
             </label>
             <select
@@ -113,7 +113,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
 
           {/* Entry Price Input */}
           <div>
-            <label htmlFor="entryPrice" className="block text-xs font-medium text-gray-300 mb-1.5 label-text">
+            <label htmlFor="entryPrice" className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 label-text">
               Entry Price
             </label>
             <input
@@ -127,13 +127,13 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               min="0"
               step="0.01"
               placeholder="4500"
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white mono-numbers transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
             />
           </div>
 
           {/* Stop Loss Price Input */}
           <div>
-            <label htmlFor="slPrice" className="block text-xs font-medium text-gray-300 mb-1.5 label-text">
+            <label htmlFor="slPrice" className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 label-text">
               Stop Loss Price
             </label>
             <input
@@ -147,7 +147,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               min="0"
               step="0.01"
               placeholder="4472.29"
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white mono-numbers transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
             />
           </div>
 
@@ -182,29 +182,29 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
           <div className="h-full flex flex-col justify-center">
             <div className="flex items-baseline justify-center gap-3 mb-4">
-              <p className="text-7xl font-bold text-white mono-numbers value-text leading-none animate-value">
+              <p className="text-7xl font-bold text-white mono-numbers value-text leading-none animate-value fade-in">
                 {calculationResult.stackingInfo.positionsToStack || 0}
               </p>
-              <p className="text-xl font-medium text-gray-300 label-text">{calculationResult.stackingInfo.positionsToStack === 1 ? 'position' : 'positions'}</p>
+              <p className="text-xl font-medium text-[#94A3B8] label-text">{calculationResult.stackingInfo.positionsToStack === 1 ? 'position' : 'positions'}</p>
             </div>
-            <div className="bg-[#2962FF]/10 rounded-lg p-3 space-y-1.5 backdrop-blur-sm border border-[#2B3139]">
+            <div className="bg-[#2962FF]/10 rounded-lg p-3 space-y-1.5 backdrop-blur-sm border border-[rgba(255,255,255,0.05)]">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400 uppercase tracking-wide label-text">Each position</span>
-                <span className="text-base font-semibold text-white mono-numbers value-text">{calculationResult.stackingInfo.minLotSize} lots</span>
+                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Each position</span>
+                <span className="text-base font-semibold text-white mono-numbers value-text fade-in">{calculationResult.stackingInfo.minLotSize} <span className="text-sm opacity-70">lots</span></span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400 uppercase tracking-wide label-text">Margin/Position</span>
-                <span className="text-base font-semibold text-white mono-numbers value-text">${calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
+                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Margin/Position</span>
+                <span className="text-base font-semibold text-white mono-numbers value-text fade-in"><span className="text-sm opacity-70">$</span>{calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center border-t border-white/10 pt-1.5 mt-1.5">
-                <span className="text-xs text-gray-400 uppercase tracking-wide label-text">Total Margin</span>
-                <span className="text-base font-semibold text-white mono-numbers value-text">
-                  ${(calculationResult.stackingInfo.positionsToStack * calculationResult.stackingInfo.marginPerPosition).toFixed(2)}
+                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Total Margin</span>
+                <span className="text-base font-semibold text-white mono-numbers value-text fade-in">
+                  <span className="text-sm opacity-70">$</span>{(calculationResult.stackingInfo.positionsToStack * calculationResult.stackingInfo.marginPerPosition).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400 uppercase tracking-wide label-text">Total Lots</span>
-                <span className="text-base font-semibold text-white mono-numbers value-text">{calculationResult.stackingInfo.totalStackedLots} lots</span>
+                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Total Lots</span>
+                <span className="text-base font-semibold text-white mono-numbers value-text fade-in">{calculationResult.stackingInfo.totalStackedLots} <span className="text-sm opacity-70">lots</span></span>
               </div>
             </div>
           </div>
@@ -220,54 +220,68 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
           <div className="space-y-3">
             {/* Margin Required */}
-            <div className="rounded-lg p-3 border border-[#2B3139] bg-[#161A1E] backdrop-blur-sm">
-              <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 label-text">Margin Required</p>
-              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value">
-                ${calculationResult.marginRequired.toFixed(2)}
+            <div className="rounded-lg p-3 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-sm">
+              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Margin Required</p>
+              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value fade-in">
+                <span className="text-base opacity-70">$</span>{calculationResult.marginRequired.toFixed(2)}
               </p>
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400 label-text">
-                    {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}%
+                  <span className="text-[#94A3B8] label-text font-semibold">
+                    {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}<span className="text-[10px] opacity-70">%</span>
                   </span>
                 </div>
                 <div className="w-full bg-gray-900/50 rounded-full h-1.5">
                   <div 
                     className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                       (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
-                        ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]' 
+                        ? 'bg-red-500' 
                         : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50 
-                        ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' 
-                        : 'bg-[#2962FF] shadow-[0_0_8px_rgba(41,98,255,0.6)]'
+                        ? 'bg-amber-500' 
+                        : 'bg-[#2962FF]'
                     }`}
-                    style={{ width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%` }}
+                    style={{ 
+                      width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%`,
+                      boxShadow: (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70
+                        ? '0 0 10px rgba(239, 68, 68, 0.6)'
+                        : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50
+                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
+                        : '0 0 10px rgba(41, 98, 255, 0.6)'
+                    }}
                   ></div>
                 </div>
               </div>
             </div>
 
             {/* Risk Amount */}
-            <div className="rounded-lg p-3 border border-[#2B3139] bg-[#161A1E] backdrop-blur-sm">
-              <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 label-text">Risk Amount</p>
-              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value">
-                ${calculationResult.riskAmount.toFixed(2)}
+            <div className="rounded-lg p-3 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-sm">
+              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Risk Amount</p>
+              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value fade-in">
+                <span className="text-base opacity-70">$</span>{calculationResult.riskAmount.toFixed(2)}
               </p>
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400 label-text">
-                    {calculationResult.riskPercentage.toFixed(2)}%
+                  <span className="text-[#94A3B8] label-text font-semibold">
+                    {calculationResult.riskPercentage.toFixed(2)}<span className="text-[10px] opacity-70">%</span>
                   </span>
                 </div>
                 <div className="w-full bg-gray-900/50 rounded-full h-1.5">
                   <div 
                     className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                       calculationResult.riskPercentage > 70 
-                        ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]' 
+                        ? 'bg-red-500' 
                         : calculationResult.riskPercentage > 50 
-                        ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' 
-                        : 'bg-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.6)]'
+                        ? 'bg-amber-500' 
+                        : 'bg-[#10B981]'
                     }`}
-                    style={{ width: `${Math.min(calculationResult.riskPercentage, 100)}%` }}
+                    style={{ 
+                      width: `${Math.min(calculationResult.riskPercentage, 100)}%`,
+                      boxShadow: calculationResult.riskPercentage > 70
+                        ? '0 0 10px rgba(239, 68, 68, 0.6)'
+                        : calculationResult.riskPercentage > 50
+                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
+                        : '0 0 10px rgba(16, 185, 129, 0.6)'
+                    }}
                   ></div>
                 </div>
               </div>
@@ -279,22 +293,22 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                 ? 'bg-red-500/20 border-red-500/50 animate-pulse critical-glow' 
                 : calculationResult.drawdownBufferPercentage < 50 
                 ? 'bg-amber-500/15 border-amber-500/30 warning-glow' 
-                : 'border-[#2B3139] bg-[#161A1E]'
+                : 'border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E]'
             }`}>
-              <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 label-text">Drawdown Buffer</p>
-              <p className={`text-xl font-semibold mono-numbers value-text mb-2 animate-value ${
+              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Drawdown Buffer</p>
+              <p className={`text-xl font-semibold mono-numbers value-text mb-2 animate-value fade-in ${
                 calculationResult.drawdownBufferPercentage < 20 
                   ? 'text-red-400' 
                   : calculationResult.drawdownBufferPercentage < 50 
                   ? 'text-amber-400' 
                   : 'text-[#10B981]'
               }`}>
-                ${calculationResult.drawdownBuffer.toFixed(2)}
+                <span className="text-base opacity-70">$</span>{calculationResult.drawdownBuffer.toFixed(2)}
               </p>
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400 label-text">
-                    {calculationResult.drawdownBufferPercentage.toFixed(0)}%
+                  <span className="text-[#94A3B8] label-text font-semibold">
+                    {calculationResult.drawdownBufferPercentage.toFixed(0)}<span className="text-[10px] opacity-70">%</span>
                   </span>
                   {calculationResult.drawdownBuffer < 0 && (
                     <span className="text-red-400 font-medium uppercase text-[10px] tracking-wider">Over-allocated</span>
@@ -304,12 +318,19 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                   <div 
                     className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                       calculationResult.drawdownBufferPercentage < 20 
-                        ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]' 
+                        ? 'bg-red-500' 
                         : calculationResult.drawdownBufferPercentage < 50 
-                        ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' 
-                        : 'bg-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.6)]'
+                        ? 'bg-amber-500' 
+                        : 'bg-[#10B981]'
                     }`}
-                    style={{ width: `${Math.min(calculationResult.drawdownBufferPercentage, 100)}%` }}
+                    style={{ 
+                      width: `${Math.min(calculationResult.drawdownBufferPercentage, 100)}%`,
+                      boxShadow: calculationResult.drawdownBufferPercentage < 20
+                        ? '0 0 10px rgba(239, 68, 68, 0.6)'
+                        : calculationResult.drawdownBufferPercentage < 50
+                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
+                        : '0 0 10px rgba(16, 185, 129, 0.6)'
+                    }}
                   ></div>
                 </div>
               </div>

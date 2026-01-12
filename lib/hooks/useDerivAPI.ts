@@ -8,15 +8,109 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getDerivClient, DerivAccount, DerivPosition, DerivTick, mapToDerivSymbol } from '../deriv-api';
 import { SymbolName } from '@/types';
+import { useDerivAPIStore } from '../store';
 
 export function useDerivAPI() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [account, setAccount] = useState<DerivAccount | null>(null);
+  // Use global Zustand store for shared state
+  const isConnected = useDerivAPIStore(state => state.isConnected);
+  const isAuthorized = useDerivAPIStore(state => state.isAuthorized);
+  const account = useDerivAPIStore(state => state.account);
+  const useDemo = useDerivAPIStore(state => state.useDemo);
+  const mt5Accounts = useDerivAPIStore(state => state.mt5Accounts);
+  const setConnected = useDerivAPIStore(state => state.setConnected);
+  const setAuthorized = useDerivAPIStore(state => state.setAuthorized);
+  const setAccount = useDerivAPIStore(state => state.setAccount);
+  const setUseDemo = useDerivAPIStore(state => state.setUseDemo);
+  const setMt5Accounts = useDerivAPIStore(state => state.setMt5Accounts);
+  
   const [error, setError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
   const client = getDerivClient();
+
+  // Auto-connect on mount
+  useEffect(() => {
+    console.log('🚀 useDerivAPI: Auto-connect useEffect running');
+    let mounted = true;
+
+    const autoConnect = async () => {
+      console.log('🔌 Starting auto-connect...');
+      try {
+        setIsConnecting(true);
+        console.log('📡 Calling client.connect()...');
+        await client.connect();
+        
+        console.log('✅ Connected! mounted =', mounted);
+        if (mounted) {
+          setConnected(true);
+          setError(null);
+
+          // Try to auto-authorize from stored token
+          const storedToken = localStorage.getItem('deriv_api_token');
+          if (storedToken) {
+            try {
+              await client.authorize(storedToken);
+              const accountInfo = await client.getAccountInfo();
+              
+              // Try to get MT5 account info if available
+              const allMt5Accounts = await client.getMT5Accounts();
+              if (allMt5Accounts.length > 0) {
+                console.log('MT5 Accounts found:', allMt5Accounts);
+                
+                if (mounted) {
+                  setMt5Accounts(allMt5Accounts);
+                  
+                  // Default to real account, fallback to first available
+                  const selectedAccount = client.getRealMT5Account(allMt5Accounts);
+                  if (selectedAccount) {
+                    console.log('Using real MT5 account:', selectedAccount);
+                    const displayAccount: DerivAccount = {
+                      balance: selectedAccount.balance || accountInfo.balance,
+                      currency: selectedAccount.currency || accountInfo.currency,
+                      loginid: selectedAccount.login || accountInfo.loginid
+                    };
+                    setAccount(displayAccount);
+                  } else {
+                    setAccount(accountInfo);
+                  }
+                  
+                  console.log('✅ Setting authorized to TRUE');
+                  setAuthorized(true);
+                }
+              } else {
+                if (mounted) {
+                  setAccount(accountInfo);
+                  console.log('✅ Setting authorized to TRUE (no MT5)');
+                  setAuthorized(true);
+                }
+              }
+            } catch (authErr) {
+              console.log('Stored token invalid, clearing...');
+              localStorage.removeItem('deriv_api_token');
+            }
+          }
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : 'Failed to connect to Deriv API');
+          setConnected(false);
+        }
+      } finally {
+        if (mounted) {
+          setIsConnecting(false);
+        }
+      }
+    };
+
+    console.log('🎬 Calling autoConnect()...');
+    autoConnect();
+
+    return () => {
+      console.log('🛑 useDerivAPI cleanup - disconnecting');
+      mounted = false;
+      client.disconnect();
+    };
+  }, [client]);
 
   const connect = useCallback(async () => {
     if (isConnecting || isConnected) return;
@@ -26,10 +120,10 @@ export function useDerivAPI() {
     
     try {
       await client.connect();
-      setIsConnected(true);
+      setConnected(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to connect');
-      setIsConnected(false);
+      setConnected(false);
     } finally {
       setIsConnecting(false);
     }
@@ -37,8 +131,8 @@ export function useDerivAPI() {
 
   const disconnect = useCallback(() => {
     client.disconnect();
-    setIsConnected(false);
-    setIsAuthorized(false);
+    setConnected(false);
+    setAuthorized(false);
     setAccount(null);
   }, [client]);
 
@@ -49,17 +143,46 @@ export function useDerivAPI() {
     }
 
     try {
+      setIsConnecting(true);
       await client.authorize(token);
       const accountInfo = await client.getAccountInfo();
-      setAccount(accountInfo);
-      setIsAuthorized(true);
+      
+      // Try to get MT5 account info if available
+      const allMt5Accounts = await client.getMT5Accounts();
+      if (allMt5Accounts.length > 0) {
+        console.log('MT5 Accounts found:', allMt5Accounts);
+        setMt5Accounts(allMt5Accounts);
+        
+        // Default to real account, fallback to first available
+        const selectedAccount = client.getRealMT5Account(allMt5Accounts);
+        if (selectedAccount) {
+          console.log('Using real MT5 account:', selectedAccount);
+          const displayAccount: DerivAccount = {
+            balance: selectedAccount.balance || accountInfo.balance,
+            currency: selectedAccount.currency || accountInfo.currency,
+            loginid: selectedAccount.login || accountInfo.loginid
+          };
+          setAccount(displayAccount);
+        } else {
+          setAccount(accountInfo);
+        }
+      } else {
+        setAccount(accountInfo);
+      }
+      
+      setAuthorized(true);
       setError(null);
       
       // Store token in localStorage for persistence
-      localStorage.setItem('deriv_token', token);
+      localStorage.setItem('deriv_api_token', token);
+      return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authorization failed');
-      setIsAuthorized(false);
+      const errorMsg = err instanceof Error ? err.message : 'Authorization failed';
+      setError(errorMsg);
+      setAuthorized(false);
+      return false;
+    } finally {
+      setIsConnecting(false);
     }
   }, [client, isConnected]);
 
@@ -89,24 +212,27 @@ export function useDerivAPI() {
     return await client.getSymbolPrice(derivSymbol);
   }, [client, isConnected]);
 
-  // Auto-connect on mount
-  useEffect(() => {
-    connect();
+  const toggleAccountType = useCallback((demo: boolean) => {
+    if (mt5Accounts.length === 0) return;
     
-    return () => {
-      disconnect();
-    };
-  }, []);
-
-  // Auto-authorize if token exists in localStorage
-  useEffect(() => {
-    if (isConnected && !isAuthorized) {
-      const storedToken = localStorage.getItem('deriv_token');
-      if (storedToken) {
-        authorize(storedToken);
-      }
+    let selectedAccount;
+    if (demo) {
+      selectedAccount = client.getDemoMT5Account(mt5Accounts);
+    } else {
+      selectedAccount = client.getRealMT5Account(mt5Accounts);
     }
-  }, [isConnected, isAuthorized, authorize]);
+    
+    if (selectedAccount) {
+      setUseDemo(demo);
+      const displayAccount: DerivAccount = {
+        balance: selectedAccount.balance,
+        currency: selectedAccount.currency,
+        loginid: selectedAccount.login
+      };
+      setAccount(displayAccount);
+      console.log(`Switched to ${demo ? 'DEMO' : 'REAL'} account:`, selectedAccount);
+    }
+  }, [mt5Accounts, client]);
 
   return {
     isConnected,
@@ -120,6 +246,9 @@ export function useDerivAPI() {
     getOpenPositions,
     subscribeToPrices,
     unsubscribeFromPrices,
-    getLivePrice
+    getLivePrice,
+    useDemo,
+    toggleAccountType,
+    mt5Accounts
   };
 }

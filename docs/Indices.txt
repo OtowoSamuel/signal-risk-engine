@@ -1,0 +1,2032 @@
+
+Boom 1000 Index
+
+1
+
+USD
+
+0.2
+
+240
+
+1.5959
+
+0.01%
+
+1:600
+
+0.17%
+
+-18.00
+
+-6.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Boom 150 Index
+
+1
+
+USD
+
+0.5
+
+1300
+
+0.094
+
+0.00%
+
+1:2000
+
+0.05%
+
+-5.00
+
+-3.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Boom 300 Index
+
+1
+
+USD
+
+0.5
+
+250
+
+0.618
+
+0.03%
+
+1:100
+
+1.00%
+
+-36.00
+
+-27.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Boom 500 Index
+
+1
+
+USD
+
+0.2
+
+400
+
+0.338
+
+0.01%
+
+1:400
+
+0.25%
+
+-23.00
+
+-9.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Boom 600 Index
+
+1
+
+USD
+
+0.2
+
+380
+
+0.403
+
+0.01%
+
+1:400
+
+0.25%
+
+-18.00
+
+-14.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Boom 900 Index
+
+1
+
+USD
+
+0.2
+
+310
+
+0.497
+
+0.01%
+
+1:400
+
+0.25%
+
+-16.00
+
+-11.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Crash 1000 Index
+
+1
+
+USD
+
+0.2
+
+720
+
+0.2947
+
+0.01%
+
+1:600
+
+0.17%
+
+-6.00
+
+-18.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Crash 150 Index
+
+1
+
+USD
+
+0.5
+
+1230
+
+0.1007
+
+0.00%
+
+1:2000
+
+0.05%
+
+-3.00
+
+-5.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Crash 300 Index
+
+1
+
+USD
+
+0.5
+
+350
+
+0.377
+
+0.02%
+
+1:100
+
+1.00%
+
+-27.00
+
+-36.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+
+
+
+Instrument
+Contract size
+Underlying units per lot.
+Contract
+size
+Base Currency
+The contract’s volume, expressed in currency or asset unit (e.g. EUR, XAU).
+Base Currency
+Min size
+Minimum lot size required to open a new position.
+Min
+size
+Vol limit
+Minimum lot size required to open a new position.
+Vol
+limit
+Min spread
+Lowest bid-ask spread achievable under ideal market conditions.
+Min
+spread
+Target Spread in %
+Expected spread expressed as a percentage of the price.
+Target Spread in %
+Max effective leverage
+Ratio of the position’s notional value to the margin required (notional ÷ margin).
+Max effective leverage
+Margin required (%)
+Percentage of notional value held as margin.
+Margin required (%)
+Swap long (pts)
+Daily swap‑long rate for potential charge or credit, expressed in points or percentage
+Swap long (pts)
+Swap short (pts)
+Daily swap‑short rate for potential charge or credit, expressed in points or percentage.
+Swap short (pts)
+Trading hours (GMT)
+Time range during which the instrument is available for trading, shown in GMT.
+Trading hours
+(GMT)
+
+Crash 500 Index
+
+1
+
+USD
+
+0.2
+
+710
+
+0.225
+
+0.01%
+
+1:400
+
+0.25%
+
+-9.00
+
+-23.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Crash 600 Index
+
+1
+
+USD
+
+0.2
+
+120
+
+1.29
+
+0.01%
+
+1:400
+
+0.25%
+
+-14.00
+
+-18.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Crash 900 Index
+
+1
+
+USD
+
+0.2
+
+160
+
+0.996
+
+0.01%
+
+1:400
+
+0.25%
+
+-11.00
+
+-16.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+DEX 1500 DOWN Index
+
+1
+
+USD
+
+0.01
+
+20
+
+2.7
+
+0.01%
+
+1:300
+
+0.33%
+
+-15.00
+
+-25.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+DEX 1500 UP Index
+
+1
+
+USD
+
+0.1
+
+120
+
+0.42
+
+0.01%
+
+1:300
+
+0.33%
+
+-25.00
+
+-15.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+DEX 600 DOWN Index
+
+1
+
+USD
+
+0.1
+
+110
+
+0.43
+
+0.02%
+
+1:200
+
+0.50%
+
+-20.00
+
+-30.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+DEX 600 UP Index
+
+1
+
+USD
+
+0.1
+
+60
+
+0.82
+
+0.02%
+
+1:200
+
+0.50%
+
+-30.00
+
+-20.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+DEX 900 DOWN Index
+
+1
+
+USD
+
+0.01
+
+15
+
+6.31
+
+0.02%
+
+1:150
+
+0.67%
+
+-25.00
+
+-35.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+DEX 900 UP Index
+
+1
+
+USD
+
+0.1
+
+130
+
+0.57
+
+0.01%
+
+1:150
+
+0.67%
+
+-35.00
+
+-25.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Drift Switch Index 10
+
+1
+
+USD
+
+0.1
+
+80
+
+0.4
+
+0.08%
+
+1:2000
+
+0.05%
+
+-7.50
+
+-7.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+Instrument
+Contract size
+Underlying units per lot.
+Contract
+size
+Base Currency
+The contract’s volume, expressed in currency or asset unit (e.g. EUR, XAU).
+Base Currency
+Min size
+Minimum lot size required to open a new position.
+Min
+size
+Vol limit
+Minimum lot size required to open a new position.
+Vol
+limit
+Min spread
+Lowest bid-ask spread achievable under ideal market conditions.
+Min
+spread
+Target Spread in %
+Expected spread expressed as a percentage of the price.
+Target Spread in %
+Max effective leverage
+Ratio of the position’s notional value to the margin required (notional ÷ margin).
+Max effective leverage
+Margin required (%)
+Percentage of notional value held as margin.
+Margin required (%)
+Swap long (pts)
+Daily swap‑long rate for potential charge or credit, expressed in points or percentage
+Swap long (pts)
+Swap short (pts)
+Daily swap‑short rate for potential charge or credit, expressed in points or percentage.
+Swap short (pts)
+Trading hours (GMT)
+Time range during which the instrument is available for trading, shown in GMT.
+Trading hours
+(GMT)
+
+Drift Switch Index 20
+
+1
+
+USD
+
+0.1
+
+140
+
+0.27
+
+0.09%
+
+1:2000
+
+0.05%
+
+-7.50
+
+-7.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Drift Switch Index 30
+
+1
+
+USD
+
+0.1
+
+70
+
+0.4
+
+0.07%
+
+1:2000
+
+0.05%
+
+-7.50
+
+-7.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+EUR Basket
+
+100
+
+USD
+
+0.01
+
+10
+
+0.103
+
+0.02%
+
+1:1000
+
+0.10%
+
+-3.00
+
+-1.00
+
+Mon 00:00 - Fri 20:55 GMT
+
+
+GBP Basket
+
+100
+
+USD
+
+0.01
+
+10
+
+0.143
+
+0.02%
+
+1:1000
+
+0.10%
+
+-3.00
+
+-1.00
+
+Mon 00:00 - Fri 20:55 GMT
+
+
+Gold Basket
+
+1
+
+USD
+
+0.01
+
+2
+
+349.421
+
+0.04%
+
+1:800
+
+0.13%
+
+-5.00
+
+-0.10
+
+Mon 00:00 - Fri 20:55 GMT. Daily break 22:00 - 23:00
+
+
+Gold RSI Pullback Index
+
+1
+
+USD
+
+0.1
+
+115
+
+3.44
+
+0.08%
+
+1:500
+
+0.20%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Gold RSI Rebound Index
+
+1
+
+USD
+
+0.1
+
+75
+
+8.12
+
+0.07%
+
+1:500
+
+0.20%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Gold RSI Trend Down Index
+
+1
+
+USD
+
+0.1
+
+70
+
+6.14
+
+0.07%
+
+1:500
+
+0.20%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Gold RSI Trend Up Index
+
+1
+
+USD
+
+0.1
+
+45
+
+14.5
+
+0.06%
+
+1:500
+
+0.20%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Jump 10 Index
+
+1
+
+USD
+
+0.01
+
+20
+
+2.53
+
+0.00%
+
+1:2500
+
+0.04%
+
+-2.00
+
+-2.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Jump 100 Index
+
+1
+
+USD
+
+0.1
+
+56
+
+0.34
+
+0.04%
+
+1:250
+
+0.40%
+
+-15.00
+
+-15.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Jump 25 Index
+
+1
+
+USD
+
+0.01
+
+6
+
+8.24
+
+0.01%
+
+1:1200
+
+0.08%
+
+-4.00
+
+-4.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Jump 50 Index
+
+1
+
+USD
+
+0.01
+
+7
+
+7.04
+
+0.02%
+
+1:600
+
+0.17%
+
+-7.00
+
+-7.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Jump 75 Index
+
+1
+
+USD
+
+0.01
+
+15
+
+3.91
+
+0.02%
+
+1:400
+
+0.25%
+
+-10.00
+
+-10.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Multi Step 2 Index
+
+10
+
+USD
+
+0.1
+
+40
+
+0.25
+
+0.00%
+
+1:7000
+
+0.01%
+
+-1.00
+
+-1.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Multi Step 3 Index
+
+10
+
+USD
+
+0.1
+
+40
+
+0.2
+
+0.00%
+
+1:6000
+
+0.02%
+
+-0.90
+
+-0.90
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Multi Step 4 Index
+
+10
+
+USD
+
+0.1
+
+50
+
+0.2
+
+0.00%
+
+1:5000
+
+0.02%
+
+-0.80
+
+-0.80
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Range Break 100 Index
+
+1
+
+USD
+
+0.01
+
+15
+
+2.2
+
+0.00%
+
+1:125
+
+0.80%
+
+-30.00
+
+-30.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Range Break 200 Index
+
+1
+
+USD
+
+0.01
+
+15
+
+1.9
+
+0.00%
+
+1:115
+
+0.87%
+
+-30.00
+
+-30.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Silver RSI Pullback Index
+
+1
+
+USD
+
+0.1
+
+15
+
+12.37
+
+0.17%
+
+1:100
+
+1.00%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Silver RSI Rebound Index
+
+1
+
+USD
+
+0.1
+
+10
+
+57.48
+
+0.10%
+
+1:100
+
+1.00%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Silver RSI Trend Down Index
+
+1
+
+USD
+
+0.1
+
+45
+
+3.62
+
+0.16%
+
+1:100
+
+1.00%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Silver RSI Trend Up Index
+
+1
+
+USD
+
+0.1
+
+35
+
+12.57
+
+0.10%
+
+1:100
+
+1.00%
+
+-10.00
+
+-10.00
+
+Mon 01:01 - Fri 20:54 GMT
+
+
+Skew Step Index 4 Down
+
+10
+
+USD
+
+0.1
+
+20
+
+0.6
+
+0.01%
+
+1:4000
+
+0.03%
+
+-1.70
+
+-1.70
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Skew Step Index 4 Up
+
+10
+
+USD
+
+0.1
+
+20
+
+0.6
+
+0.01%
+
+1:4000
+
+0.03%
+
+-1.70
+
+-1.70
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Skew Step Index 5 Down
+
+10
+
+USD
+
+0.1
+
+15
+
+0.9
+
+0.01%
+
+1:3000
+
+0.03%
+
+-2.00
+
+-2.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Skew Step Index 5 Up
+
+10
+
+USD
+
+0.1
+
+15
+
+0.8
+
+0.01%
+
+1:3000
+
+0.03%
+
+-1.90
+
+-1.90
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Step Index
+
+10
+
+USD
+
+0.1
+
+250
+
+0.1
+
+0.00%
+
+1:10000
+
+0.01%
+
+-0.55
+
+-0.55
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Step Index 200
+
+10
+
+USD
+
+0.1
+
+60
+
+0.2
+
+0.00%
+
+1:5000
+
+0.02%
+
+-1.10
+
+-1.10
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Step Index 300
+
+10
+
+USD
+
+0.1
+
+45
+
+0.3
+
+0.00%
+
+1:3000
+
+0.03%
+
+-1.65
+
+-1.65
+
+Sun 00:00 - Sat 24:00 GMT
+
+Step Index 400
+
+10
+
+USD
+
+0.1
+
+40
+
+0.4
+
+0.01%
+
+1:2500
+
+0.04%
+
+-2.20
+
+-2.20
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Step Index 500
+
+10
+
+USD
+
+0.1
+
+45
+
+0.5
+
+0.01%
+
+1:2000
+
+0.05%
+
+-2.75
+
+-2.75
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Trek Down Index
+
+1
+
+USD
+
+0.1
+
+80
+
+0.72
+
+0.01%
+
+1:500
+
+0.20%
+
+-10.00
+
+-10.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Trek Up Index
+
+1
+
+USD
+
+0.1
+
+80
+
+0.75
+
+0.01%
+
+1:500
+
+0.20%
+
+-10.00
+
+-10.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+USD Basket
+
+100
+
+USD
+
+0.01
+
+10
+
+0.118
+
+0.01%
+
+1:1000
+
+0.10%
+
+-3.00
+
+-1.00
+
+Mon 00:00 - Fri 20:55 GMT
+
+
+Vol over Boom 400
+
+1
+
+USD
+
+0.1
+
+40
+
+1.94
+
+0.02%
+
+1:100
+
+1.00%
+
+-25.00
+
+-30.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Vol over Boom 550
+
+1
+
+USD
+
+0.1
+
+70
+
+0.97
+
+0.02%
+
+1:150
+
+0.67%
+
+-20.00
+
+-25.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Vol over Boom 750
+
+1
+
+USD
+
+0.1
+
+35
+
+2.05
+
+0.01%
+
+1:200
+
+0.50%
+
+-15.00
+
+-20.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Vol over Crash 400
+
+1
+
+USD
+
+0.1
+
+40
+
+1.99
+
+0.03%
+
+1:100
+
+1.00%
+
+-25.00
+
+-30.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Vol over Crash 550
+
+1
+
+USD
+
+0.1
+
+150
+
+0.58
+
+0.01%
+
+1:150
+
+0.67%
+
+-20.00
+
+-25.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+
+Vol over Crash 750
+
+1
+
+USD
+
+0.1
+
+60
+
+1.12
+
+0.02%
+
+1:200
+
+0.50%
+
+-15.00
+
+-20.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+VolSwitch High Vol Index
+
+1
+
+USD
+
+0.1
+
+50
+
+1.07
+
+0.07%
+
+1:700
+
+0.14%
+
+-10.90
+
+-10.90
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+VolSwitch Low Vol Index
+
+1
+
+USD
+
+0.1
+
+50
+
+1.14
+
+0.02%
+
+1:500
+
+0.20%
+
+-4.30
+
+-4.30
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+VolSwitch Medium Vol Index
+
+1
+
+USD
+
+0.1
+
+20
+
+2.01
+
+0.04%
+
+1:600
+
+0.17%
+
+-7.30
+
+-7.30
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 10 (1s) Index
+
+1
+
+USD
+
+0.5
+
+810
+
+0.28
+
+0.00%
+
+1:5000
+
+0.02%
+
+-1.00
+
+-1.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 10 Index
+
+1
+
+USD
+
+0.5
+
+1100
+
+0.166
+
+0.00%
+
+1:5000
+
+0.02%
+
+-1.00
+
+-1.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 100 (1s) Index
+
+1
+
+USD
+
+1
+
+1000
+
+0.3
+
+0.03%
+
+1:1502
+
+0.07%
+
+-10.00
+
+-10.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 100 Index
+
+1
+
+USD
+
+1
+
+660
+
+0.24
+
+0.03%
+
+1:1000
+
+0.10%
+
+-10.00
+
+-10.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 15 (1s) Index
+
+1
+
+USD
+
+0.2
+
+300
+
+0.549
+
+0.00%
+
+1:3000
+
+0.03%
+
+-1.50
+
+-1.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 150 (1s) Index
+
+1
+
+USD
+
+1
+
+50
+
+0.07
+
+0.06%
+
+1:500
+
+0.20%
+
+-15.00
+
+-15.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 25 (1s) Index
+
+1
+
+USD
+
+0.005
+
+5
+
+50.76
+
+0.01%
+
+1:4000
+
+0.03%
+
+-2.50
+
+-2.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 25 Index
+
+1
+
+USD
+
+0.5
+
+1200
+
+0.176
+
+0.01%
+
+1:4000
+
+0.03%
+
+-2.50
+
+-2.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 250 (1s) Index
+
+1
+
+USD
+
+1
+
+50
+
+0.06
+
+2.16%
+
+1:250
+
+0.40%
+
+-25.00
+
+-25.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 30 (1s) Index
+
+1
+
+USD
+
+0.2
+
+360
+
+0.776
+
+0.01%
+
+1:2000
+
+0.05%
+
+-3.00
+
+-3.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 50 (1s) Index
+
+1
+
+USD
+
+0.005
+
+8
+
+35.96
+
+0.01%
+
+1:2941
+
+0.03%
+
+-5.00
+
+-5.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 50 Index
+
+1
+
+USD
+
+4
+
+11000
+
+0.019
+
+0.01%
+
+1:2500
+
+0.04%
+
+-5.00
+
+-5.00
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 75 (1s) Index
+
+1
+
+USD
+
+0.05
+
+230
+
+0.95
+
+0.02%
+
+1:2000
+
+0.05%
+
+-7.50
+
+-7.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 75 Index
+
+1
+
+USD
+
+0.001
+
+35
+
+11.89
+
+0.03%
+
+1:1000
+
+0.10%
+
+-7.50
+
+-7.50
+
+Sun 00:00 - Sat 24:00 GMT
+
+
+Volatility 90 (1s) Index
+
+1
+
+USD
+
+0.1
+
+50
+
+4.484
+
+0.03%
+
+1:1000
+
+0.10%
+
+-9.00
+
+-9.00
+
+Sun 00:00 - Sat 24:00 GMT
+

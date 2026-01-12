@@ -1,18 +1,28 @@
 /**
  * AccountSetup Component
  * Based on PRD Section 7.1 - Account Setup Module
+ * Integrated with Deriv API for live balance updates
  */
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSettings } from '@/lib/store';
+import { useDerivAPI } from '@/lib/hooks/useDerivAPI';
 import { validateAccountSettings } from '@/lib/calculator';
 
 export default function AccountSetup() {
   const { settings, updateSettings } = useSettings();
+  const { account, isAuthorized, useDemo } = useDerivAPI();
   const [errors, setErrors] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Auto-sync balance from Deriv API when account is authorized
+  useEffect(() => {
+    if (isAuthorized && account?.balance) {
+      updateSettings({ mt5Balance: account.balance });
+    }
+  }, [account?.balance, isAuthorized, updateSettings]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +48,7 @@ export default function AccountSetup() {
   return (
     <div className="glass-card rounded-xl p-3.5">
       <div className="flex items-center justify-between mb-2.5">
-        <h2 className="text-sm font-bold text-white label-text flex items-center gap-2">
+        <h2 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider label-text flex items-center gap-2">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
           </svg>
@@ -46,7 +56,7 @@ export default function AccountSetup() {
         </h2>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-xs text-[#2962FF] hover:text-[#2962FF]/80 transition-colors font-medium"
+          className="text-xs text-[#2962FF] hover:text-[#2962FF]/80 transition-colors font-medium cursor-pointer"
         >
           {isExpanded ? 'Close' : 'Edit'}
         </button>
@@ -56,13 +66,33 @@ export default function AccountSetup() {
       {!isExpanded && (
         <div className="space-y-1.5">
           <div className="elevated-card rounded-lg p-2">
-            <p className="text-gray-400 text-xs mb-0.5 label-text">MT5 Balance</p>
-            <p className="mono-numbers text-base font-semibold text-white value-text">${settings.mt5Balance}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-0.5 label-text">MT5 Balance</p>
+                <p className="mono-numbers text-lg font-semibold text-white value-text fade-in">
+                  <span className="text-base opacity-70">$</span>{isAuthorized && account?.balance ? account.balance.toFixed(2) : settings.mt5Balance.toFixed(2)}
+                </p>
+              </div>
+              {isAuthorized && (
+                <span className={`text-xs font-bold px-2 py-1 rounded whitespace-nowrap ${
+                  useDemo 
+                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                    : 'bg-green-500/20 text-green-400 border border-green-500/30'
+                }`}>
+                  {useDemo ? 'DEMO' : 'LIVE'}
+                </span>
+              )}
+            </div>
           </div>
           <div className="elevated-card rounded-lg p-2">
-            <p className="text-gray-400 text-xs mb-0.5 label-text">Target Margin</p>
-            <p className="mono-numbers text-base font-semibold text-[#2962FF] value-text">{settings.targetMarginPercent}%</p>
+            <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-0.5 label-text">Target Margin</p>
+            <p className="mono-numbers text-lg font-semibold text-[#2962FF] value-text fade-in">{settings.targetMarginPercent}<span className="text-base opacity-70">%</span></p>
           </div>
+          {isAuthorized && (
+            <div className="text-xs text-green-400/70 bg-green-500/10 border border-green-500/20 rounded px-2 py-1.5">
+              ✓ Connected to {useDemo ? 'Demo' : 'Real'} MT5 Account
+            </div>
+          )}
         </div>
       )}
 
@@ -79,17 +109,22 @@ export default function AccountSetup() {
               <input
                 type="number"
                 id="mt5Balance"
-                value={settings.mt5Balance}
-                onChange={(e) => handleChange('mt5Balance', parseFloat(e.target.value) || 0)}
+                value={isAuthorized && account?.balance ? account.balance : settings.mt5Balance}
+                onChange={(e) => !isAuthorized && handleChange('mt5Balance', parseFloat(e.target.value) || 0)}
                 min="1"
                 max="100000"
-                step="1"
-                className="w-full pl-10 pr-4 py-3 bg-[#1E2329] border border-[#2B3139] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
+                step="0.01"
+                disabled={isAuthorized}
+                className={`w-full pl-10 pr-4 py-3 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 ${
+                  isAuthorized ? 'opacity-60 cursor-not-allowed' : ''
+                }`}
                 placeholder="10.00"
               />
             </div>
             <p className="text-xs text-gray-400 mt-1">
-              Amount transferred to MT5 for trading
+              {isAuthorized 
+                ? '✓ Live balance from your connected MT5 account (read-only)' 
+                : 'Amount to allocate for trading'}
             </p>
           </div>
 
@@ -107,7 +142,7 @@ export default function AccountSetup() {
                 min="10"
                 max="80"
                 step="5"
-                className="w-full pr-10 pl-4 py-3 bg-[#1E2329] border border-[#2B3139] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none"
+                className="w-full pr-10 pl-4 py-3 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
                 placeholder="35"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">%</span>
@@ -131,7 +166,7 @@ export default function AccountSetup() {
           {/* Save Button */}
           <button
             type="submit"
-            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white font-medium py-3 px-4 rounded-lg transition-all glow-blue active:scale-[0.98] active:shadow-[#2962FF]/40"
+            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white font-medium py-3 px-4 rounded-lg transition-all glow-blue active:scale-95 cursor-pointer"
           >
             Save Settings
           </button>
