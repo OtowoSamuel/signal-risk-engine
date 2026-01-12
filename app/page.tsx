@@ -5,6 +5,7 @@ import AccountSetup from '@/components/AccountSetup';
 import TradeCalculator from '@/components/TradeCalculator';
 import StackingTracker from '@/components/StackingTracker';
 import Disclaimer from '@/components/Disclaimer';
+import DerivConnection from '@/components/DerivConnection';
 
 export default function Home() {
   const { settings } = useSettings();
@@ -83,6 +84,9 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* LEFT COLUMN: INPUT ZONE (30%) - STICKY */}
             <div className="lg:col-span-3 space-y-4 lg:sticky lg:top-24 lg:border-r lg:border-[#2B3139] lg:pr-6">
+              {/* Deriv API Connection */}
+              <DerivConnection />
+              
               {/* Account Settings - Condensed */}
               <AccountSetup />
               

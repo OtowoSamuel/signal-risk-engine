@@ -10,15 +10,18 @@ import { usePositions, useSettings, useStackingAnalysis } from '@/lib/store';
 import { getSymbol, getSymbolNames } from '@/lib/symbols';
 import { calculateMargin } from '@/lib/calculator';
 import { SymbolName } from '@/types';
+import { useDerivAPI } from '@/lib/hooks/useDerivAPI';
 
 export default function StackingTracker() {
   const { openPositions, addPosition, removePosition, clearPositions } = usePositions();
   const { settings } = useSettings();
   const stackingAnalysis = useStackingAnalysis();
+  const { isAuthorized, getOpenPositions } = useDerivAPI();
   
   const symbolNames = getSymbolNames();
   
   const [isAddingPosition, setIsAddingPosition] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [newPosition, setNewPosition] = useState({
     symbol: 'Volatility 75 (1s) Index' as SymbolName,
     lotSize: 0.01,
@@ -37,6 +40,33 @@ export default function StackingTracker() {
     
     setIsAddingPosition(false);
     setNewPosition({ symbol: 'Volatility 75 (1s) Index', lotSize: 0.01, stopLoss: 50 });
+  };
+
+  const handleSyncPositions = async () => {
+    setIsSyncing(true);
+    try {
+      const positions = await getOpenPositions();
+      
+      // Clear existing positions
+      clearPositions();
+      
+      // Add positions from Deriv
+      positions.forEach(pos => {
+        // Try to match Deriv symbol to our symbol names
+        const symbol = symbolNames.find(s => s.includes(pos.symbol)) || 'Volatility 75 (1s) Index' as SymbolName;
+        
+        addPosition({
+          symbol,
+          lotSize: 0.01, // Default, Deriv portfolio doesn't always show lot size directly
+          stopLoss: 50, // Default
+          marginUsed: pos.buy_price
+        });
+      });
+    } catch (error) {
+      console.error('Failed to sync positions:', error);
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   const getWarningColorClass = (level: string) => {
@@ -72,6 +102,15 @@ export default function StackingTracker() {
           Open Positions
         </h2>
         <div className="flex gap-2">
+          {isAuthorized && (
+            <button
+              onClick={handleSyncPositions}
+              disabled={isSyncing}
+              className="text-sm text-green-400 hover:text-green-300 transition-colors px-3 py-1 rounded-lg bg-green-900/20 border border-green-500/30 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSyncing ? 'Syncing...' : '↻ Sync from Deriv'}
+            </button>
+          )}
           {openPositions.length > 0 && (
             <button
               onClick={clearPositions}

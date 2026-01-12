@@ -284,18 +284,58 @@ describe('Deriv MT5 Accuracy Verification', () => {
     });
 
     it('should verify all symbols have correct MT5 constraints', () => {
-      const symbols: Array<'Volatility 75 (1s) Index' | 'Crash 500 Index' | 'Boom 1000 Index'> = [
+      // Using official Deriv minimum lot sizes from Synthetic-Indices-Lot-Size-Guide-pdf-2025
+      
+      // Volatility indices (1s) - varied lot sizes
+      expect(getSymbol('Volatility 10 (1s) Index').minLot).toBe(0.5);
+      expect(getSymbol('Volatility 25 (1s) Index').minLot).toBe(0.005);
+      expect(getSymbol('Volatility 50 (1s) Index').minLot).toBe(0.005);
+      expect(getSymbol('Volatility 75 (1s) Index').minLot).toBe(0.05);
+      expect(getSymbol('Volatility 100 (1s) Index').minLot).toBe(0.5);
+      
+      // Volatility indices (2s)
+      expect(getSymbol('Volatility 10 Index').minLot).toBe(0.5);
+      expect(getSymbol('Volatility 25 Index').minLot).toBe(0.5);
+      expect(getSymbol('Volatility 50 Index').minLot).toBe(4.0);
+      expect(getSymbol('Volatility 75 Index').minLot).toBe(0.001);
+      expect(getSymbol('Volatility 100 Index').minLot).toBe(0.5);
+      
+      // Crash indices
+      expect(getSymbol('Crash 300 Index').minLot).toBe(0.5);
+      expect(getSymbol('Crash 500 Index').minLot).toBe(0.2);
+      expect(getSymbol('Crash 600 Index').minLot).toBe(0.2);
+      expect(getSymbol('Crash 900 Index').minLot).toBe(0.2);
+      expect(getSymbol('Crash 1000 Index').minLot).toBe(0.2);
+      
+      // Boom indices
+      expect(getSymbol('Boom 300 Index').minLot).toBe(1.0);
+      expect(getSymbol('Boom 500 Index').minLot).toBe(0.2);
+      expect(getSymbol('Boom 600 Index').minLot).toBe(0.2);
+      expect(getSymbol('Boom 900 Index').minLot).toBe(0.2);
+      expect(getSymbol('Boom 1000 Index').minLot).toBe(0.2);
+      
+      // Jump indices
+      expect(getSymbol('Jump 10 Index').minLot).toBe(0.01);
+      expect(getSymbol('Jump 25 Index').minLot).toBe(0.01);
+      
+      // Range Break indices
+      expect(getSymbol('Range Break 100 Index').minLot).toBe(0.01);
+      expect(getSymbol('Range Break 200 Index').minLot).toBe(0.01);
+      
+      // DEX indices
+      expect(getSymbol('DEX 600 UP Index').minLot).toBe(0.01);
+      expect(getSymbol('DEX 600 DOWN Index').minLot).toBe(0.01);
+      expect(getSymbol('DEX 900 UP Index').minLot).toBe(0.01);
+      expect(getSymbol('DEX 900 DOWN Index').minLot).toBe(0.01);
+      
+      // Verify all have max lot of 100
+      const testSymbols: SymbolName[] = [
         'Volatility 75 (1s) Index',
         'Crash 500 Index',
         'Boom 1000 Index'
       ];
-
-      // Volatility indices have 0.1 min lot, Crash/Boom have 1.0 min lot
-      expect(getSymbol('Volatility 75 (1s) Index').minLot).toBe(0.1);
-      expect(getSymbol('Crash 500 Index').minLot).toBe(1.0);
-      expect(getSymbol('Boom 1000 Index').minLot).toBe(1.0);
       
-      symbols.forEach(symbol => {
+      testSymbols.forEach(symbol => {
         const symbolData = getSymbol(symbol);
         expect(symbolData.maxLot).toBe(100);
       });
