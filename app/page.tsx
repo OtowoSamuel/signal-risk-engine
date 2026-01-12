@@ -32,32 +32,32 @@ export default function Home() {
     <div className="min-h-screen bg-[#0B0E11]">
       {/* Sticky Global Status Bar - Highest Z-layer */}
       <div className="sticky top-0 z-50 border-b border-white/5 backdrop-blur-md bg-[#0B0E11]/95 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 text-sm">
             <div>
-              <span className="text-[10px] uppercase tracking-widest text-slate-500 block mb-1 font-semibold label-text">MT5 Balance</span>
-              <p className="text-white font-mono font-bold text-lg mono-numbers value-text fade-in">${displayBalance.toFixed(2)}</p>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 block mb-0.5 sm:mb-1 font-semibold label-text">MT5 Balance</span>
+              <p className="text-white font-mono font-bold text-sm sm:text-lg mono-numbers value-text fade-in">${displayBalance.toFixed(2)}</p>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-widest text-slate-500 block mb-1 font-semibold label-text">Margin Used</span>
-              <p className={`font-mono font-semibold text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 block mb-0.5 sm:mb-1 font-semibold label-text">Margin Used</span>
+              <p className={`font-mono font-semibold text-sm sm:text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
                 marginPercent > 70 ? 'text-red-400' : 
                 marginPercent > 50 ? 'text-amber-400' : 
                 marginPercent < 10 ? 'text-emerald-400' :
                 'text-emerald-300'
               }`}>
-                ${totalMarginUsed.toFixed(2)} <span className="text-sm opacity-70">({marginPercent.toFixed(1)}%)</span>
+                ${totalMarginUsed.toFixed(2)} <span className="text-xs sm:text-sm opacity-70">({marginPercent.toFixed(1)}%)</span>
               </p>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-widest text-slate-500 block mb-1 font-semibold label-text">Buffer</span>
-              <p className={`font-mono font-semibold text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 block mb-0.5 sm:mb-1 font-semibold label-text">Buffer</span>
+              <p className={`font-mono font-semibold text-sm sm:text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
                 bufferPercent < 30 ? 'text-red-400' : 
                 bufferPercent < 50 ? 'text-amber-400' : 
                 bufferPercent > 90 ? 'text-emerald-400' :
                 'text-emerald-300'
               }`}>
-                ${drawdownBuffer.toFixed(2)} <span className="text-sm opacity-70">({bufferPercent.toFixed(1)}%)</span>
+                ${drawdownBuffer.toFixed(2)} <span className="text-xs sm:text-sm opacity-70">({bufferPercent.toFixed(1)}%)</span>
               </p>
             </div>
             <div className="flex items-center justify-end gap-2 col-span-2 lg:col-span-1">
@@ -87,17 +87,17 @@ export default function Home() {
 
       {/* Header */}
       <header className="border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
             <div>
-              <h1 className="text-3xl font-bold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 Signal Risk Engine
               </h1>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-xs sm:text-sm text-gray-400 mt-1">
                 Precision MT5 Position Sizing • Deriv Synthetic Indices
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#2962FF]/10 text-[#2962FF] border border-[#2962FF]/20">
                 v1.0 MVP
               </span>
@@ -107,12 +107,12 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="w-full px-6 sm:px-6 lg:px-8 py-6">
+      <main className="w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto">
           {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
             {/* LEFT COLUMN: INPUT ZONE (33%) - STICKY with Z-axis depth */}
-            <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 lg:z-10" style={{ boxShadow: '10px 0 30px -15px rgba(0, 0, 0, 0.5)' }}>
+            <div className="lg:col-span-4 space-y-4 sm:space-y-6 lg:sticky lg:top-24 lg:z-10" style={{ boxShadow: window.innerWidth >= 1024 ? '10px 0 30px -15px rgba(0, 0, 0, 0.5)' : 'none' }}>
               {/* Deriv API Connection */}
               <DerivConnection />
               
@@ -141,19 +141,19 @@ export default function Home() {
             </div>
 
             {/* RIGHT COLUMN: INTEL ZONE (67%) - 4:8 Golden Ratio */}
-            <div className="lg:col-span-8 space-y-6 lg:z-0">
+            <div className="lg:col-span-8 space-y-4 sm:space-y-6 lg:z-0">
               {/* Trade Analysis - Bento Grid (Strategy + Metrics Side-by-Side) */}
               {/* Note: Risk metric card edges align with Open Positions table columns below for architectural consistency */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Left: Stacking Strategy */}
-                <div className="rounded-xl p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
-                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-4 label-text">Stacking Strategy</h3>
+                <div className="rounded-xl p-4 sm:p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
+                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3 sm:mb-4 label-text">Stacking Strategy</h3>
                   <TradeCalculator displayMode="stacking-result-only" />
                 </div>
                 
                 {/* Right: Risk Metrics */}
-                <div className="rounded-xl p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
-                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-4 label-text">Risk Analysis</h3>
+                <div className="rounded-xl p-4 sm:p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
+                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3 sm:mb-4 label-text">Risk Analysis</h3>
                   <TradeCalculator displayMode="gauges-only" />
                 </div>
               </div>
@@ -169,10 +169,10 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 mt-12">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-gray-400 text-center md:text-left">
+      <footer className="border-t border-white/5 mt-8 sm:mt-12">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="text-xs sm:text-sm text-gray-400 text-center md:text-left">
               <p>© 2026 Signal Risk Engine • Educational Tool Only</p>
               <p className="text-xs text-gray-500 mt-1">
                 Not affiliated with Deriv • Use at your own risk

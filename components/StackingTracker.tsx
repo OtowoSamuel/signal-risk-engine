@@ -66,23 +66,23 @@ export default function StackingTracker() {
   };
 
   return (
-    <div className="glass-card rounded-xl p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white">
+    <div className="glass-card rounded-xl p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-white">
           Open Positions
         </h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {openPositions.length > 0 && (
             <button
               onClick={clearPositions}
-              className="text-sm text-red-400 hover:brightness-110 transition-all px-4 py-2 rounded-lg bg-red-900/20 border border-red-500/30 font-medium cursor-pointer active:scale-95"
+              className="text-xs sm:text-sm text-red-400 hover:brightness-110 transition-all px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-red-900/20 border border-red-500/30 font-medium cursor-pointer active:scale-95"
             >
               Clear All
             </button>
           )}
           <button
             onClick={() => setIsAddingPosition(!isAddingPosition)}
-            className="text-base bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white px-6 py-2.5 rounded-lg transition-all font-semibold border-t border-white/20 shadow-lg shadow-blue-500/30 active:scale-95 cursor-pointer"
+            className="text-sm sm:text-base bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-all font-semibold border-t border-white/20 shadow-lg shadow-blue-500/30 active:scale-95 cursor-pointer flex-1 sm:flex-initial"
           >
             <span className="inline-block" style={{ transform: 'translateY(-0.5px)' }}>{isAddingPosition ? 'Cancel' : '+ Add Position'}</span>
           </button>
@@ -91,10 +91,10 @@ export default function StackingTracker() {
 
       {/* Add Position Form */}
       {isAddingPosition && (
-        <div className="mb-6 bg-gray-900/30 rounded-lg p-4 space-y-4 border border-white/5">
+        <div className="mb-6 bg-gray-900/30 rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4 border border-white/5">
           <h3 className="text-sm font-medium text-gray-300">Add Open Position</h3>
           
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">Symbol</label>
               <select

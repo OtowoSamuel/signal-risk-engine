@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getDerivClient, DerivAccount, DerivPosition, DerivTick, mapToDerivSymbol } from '../deriv-api';
 import { SymbolName } from '@/types';
 import { useDerivAPIStore } from '../store';
@@ -25,13 +25,28 @@ export function useDerivAPI() {
   
   const [error, setError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const hasAutoConnected = useRef(false);
 
   const client = getDerivClient();
 
-  // Auto-connect on mount
+  // Auto-connect on mount (only once)
   useEffect(() => {
     console.log('🚀 useDerivAPI: Auto-connect useEffect running');
+    
+    // Prevent duplicate connections on React StrictMode remounts
+    if (hasAutoConnected.current) {
+      console.log('⏭️ Auto-connect already ran, skipping');
+      return;
+    }
+    
+    // Skip if already connected
+    if (isConnected) {
+      console.log('⏭️ Already connected, skipping auto-connect');
+      return;
+    }
+    
     let mounted = true;
+    hasAutoConnected.current = true;
 
     const autoConnect = async () => {
       console.log('🔌 Starting auto-connect...');
@@ -106,11 +121,12 @@ export function useDerivAPI() {
     autoConnect();
 
     return () => {
-      console.log('🛑 useDerivAPI cleanup - disconnecting');
+      console.log('🛑 useDerivAPI cleanup');
       mounted = false;
-      client.disconnect();
+      // Don't disconnect - let the singleton manage its own lifecycle
+      // Only disconnect when explicitly calling disconnect()
     };
-  }, [client]);
+  }, []); // Empty deps - only run once on mount
 
   const connect = useCallback(async () => {
     if (isConnecting || isConnected) return;
