@@ -30,10 +30,10 @@ export default function ShowMath({
   const marginUsagePercentage = (calculationResult.marginRequired / allocatedCapital) * 100;
 
   return (
-    <div className="border-t border-gray-700/30 pt-4 mt-4">
+    <div className="border-t border-white/5 pt-4 mt-4">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between w-full text-sm font-medium text-[#2962FF] hover:text-[#2962FF]/80 transition-colors"
+        className="flex items-center justify-between w-full text-sm font-semibold text-[#2962FF] hover:brightness-110 transition-all active:scale-[0.99]"
       >
         <span className="flex items-center gap-2">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@ export default function ShowMath({
           {/* Formula Overview */}
           <div>
             <p className="font-medium text-white mb-2">Step 1: Calculate Maximum Safe Lot Size</p>
-            <div className="bg-gray-900/50 rounded border border-gray-700/50 p-3 font-mono text-xs">
+            <div className="bg-gray-900/50 rounded border border-white/5 p-3 font-mono text-xs">
               <p className="text-gray-400 mb-2">Formula:</p>
               <p className="text-[#2962FF]">
                 Max Lot Size = (Allocated Capital × 0.35) / (SL Points × Point Value)
@@ -77,7 +77,7 @@ export default function ShowMath({
           {/* Margin Calculation */}
           <div>
             <p className="font-medium text-white mb-2">Step 2: Calculate Margin Required</p>
-            <div className="bg-gray-900/50 rounded border border-gray-700/50 p-3 font-mono text-xs">
+            <div className="bg-gray-900/50 rounded border border-white/5 p-3 font-mono text-xs">
               <p className="text-gray-400 mb-2">Formula:</p>
               <p className="text-[#2962FF]">
                 Margin = (Lot Size × Contract Size × Price) / Leverage
@@ -97,7 +97,7 @@ export default function ShowMath({
           {/* Risk Calculation */}
           <div>
             <p className="font-medium text-white mb-2">Step 3: Calculate Risk Amount</p>
-            <div className="bg-gray-900/50 rounded border border-gray-700/50 p-3 font-mono text-xs">
+            <div className="bg-gray-900/50 rounded border border-white/5 p-3 font-mono text-xs">
               <p className="text-gray-400 mb-2">Formula:</p>
               <p className="text-[#2962FF]">
                 Risk = Lot Size × SL Points × Point Value
@@ -114,7 +114,7 @@ export default function ShowMath({
           {/* Buffer Calculation */}
           <div>
             <p className="font-medium text-white mb-2">Step 4: Calculate Drawdown Buffer</p>
-            <div className="bg-gray-900/50 rounded border border-gray-700/50 p-3 font-mono text-xs">
+            <div className="bg-gray-900/50 rounded border border-white/5 p-3 font-mono text-xs">
               <p className="text-gray-400 mb-2">Formula:</p>
               <p className="text-[#2962FF]">
                 Buffer = Allocated Capital - Margin Required
@@ -132,7 +132,7 @@ export default function ShowMath({
           </div>
 
           {/* Why This Matters */}
-          <div className="border-t border-gray-700/30 pt-3">
+          <div className="border-t border-white/5 pt-3">
             <p className="font-medium text-white mb-2">Why These Numbers Matter:</p>
             <ul className="space-y-2 text-xs text-gray-300">
               <li className="flex gap-2">

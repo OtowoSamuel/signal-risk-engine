@@ -11,6 +11,7 @@ import { getSymbolNames } from '@/lib/symbols';
 import { validateCalculationInputs } from '@/lib/calculator';
 import { SymbolName } from '@/types';
 import ShowMath from './ShowMath';
+import InstrumentSpecs from './InstrumentSpecs';
 
 interface TradeCalculatorProps {
   displayMode?: 'full' | 'inputs-only' | 'stacking-result-only' | 'gauges-only' | 'show-math-only';
@@ -102,7 +103,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               id="symbol"
               value={selectedSymbol}
               onChange={(e) => setSelectedSymbol(e.target.value as SymbolName)}
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg text-sm text-white transition-all focus-within:ring-2 focus-within:ring-[#2962FF]/50 focus:outline-none hover:bg-[#1E2329]/80"              aria-label="Select trading symbol"            >
+              className="w-full px-3 py-2 bg-[#1E2329] border border-white/5 rounded-md text-sm text-white transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 hover:bg-[#1E2329]/80 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)] cursor-pointer"              aria-label="Select trading symbol"            >
               {getSymbolNames().map((name) => (
                 <option key={name} value={name} className="bg-gray-900 text-white">
                   {name}
@@ -127,7 +128,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               min="0"
               step="0.01"
               placeholder="4500"
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-white/5 rounded-md text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
             />
           </div>
 
@@ -147,7 +148,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               min="0"
               step="0.01"
               placeholder="4472.29"
-              className="w-full px-3 py-2 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-white/5 rounded-md text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
             />
           </div>
 
@@ -170,6 +171,9 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               ))}
             </div>
           )}
+
+          {/* Instrument Specifications */}
+          <InstrumentSpecs symbol={selectedSymbol} />
         </div>
       </div>
     );
@@ -231,7 +235,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                     {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}<span className="text-[10px] opacity-70">%</span>
                   </span>
                 </div>
-                <div className="w-full bg-gray-900/50 rounded-full h-1.5">
+                <div className="w-full bg-gray-900/50 rounded-full h-1.5 overflow-hidden">
                   <div 
                     className={`h-full rounded-full transition-all duration-300 animate-gauge ${
                       (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
@@ -243,10 +247,11 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                     style={{ 
                       width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%`,
                       boxShadow: (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70
-                        ? '0 0 10px rgba(239, 68, 68, 0.6)'
+                        ? '0 0 12px rgba(239, 68, 68, 0.8)'
                         : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50
-                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
-                        : '0 0 10px rgba(41, 98, 255, 0.6)'
+                        ? '0 0 12px rgba(245, 158, 11, 0.7)'
+                        : '0 0 12px rgba(41, 98, 255, 0.8)',
+                      borderRadius: '9999px'
                     }}
                   ></div>
                 </div>
@@ -446,7 +451,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
 
         {/* Calculation Results */}
         {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
-          <div className="border-t border-gray-700/30 pt-6 space-y-4">
+          <div className="border-t border-white/5 pt-6 space-y-4">
             {/* Primary Output - STACKING INFO */}
             <div className="elevated-card rounded-xl p-6 border border-[#2962FF]/20 glow-blue">
               <p className="text-sm text-[#2962FF] mb-2 font-medium label-text">Stacking Strategy</p>
@@ -494,16 +499,19 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                       {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}% of MT5 balance
                     </span>
                   </div>
-                  <div className="w-full bg-gray-800/50 rounded-full h-2">
+                  <div className="w-full bg-gray-800/50 rounded-full h-2 overflow-hidden">
                     <div 
-                      className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                      className={`h-full transition-all duration-300 animate-gauge ${
                         (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
                           ? 'bg-red-500 glow-red' 
                           : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50 
                           ? 'bg-amber-500' 
                           : 'bg-[#2962FF] glow-blue'
                       }`}
-                      style={{ width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%` }}
+                      style={{ 
+                        width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%`,
+                        borderRadius: '9999px'
+                      }}
                     ></div>
                   </div>
                 </div>
@@ -626,7 +634,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
 
         {/* Empty State */}
         {(!calculationResult || stopLoss === 0) && inputErrors.length === 0 && (
-          <div className="border-t border-gray-700/30 pt-6 text-center text-gray-400">
+          <div className="border-t border-white/5 pt-6 text-center text-gray-400">
             <svg
               className="mx-auto h-12 w-12 text-gray-600 mb-3"
               fill="none"

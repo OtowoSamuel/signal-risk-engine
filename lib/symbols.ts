@@ -13,9 +13,9 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     name: 'Volatility 10 (1s) Index',
     pointValue: 0.1,
     minLot: 0.5,
-    maxLot: 100,
+    maxLot: 810, // Updated from Deriv specs
     lotStep: 0.1,
-    leverage: 1000,
+    leverage: 5000, // 1:5000 leverage (0.02% margin)
     typicalPrice: 6000,
     contractSize: 1,
     description: 'Simulates a market with 10% volatility, 1-second tick intervals'
@@ -24,9 +24,9 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     name: 'Volatility 25 (1s) Index',
     pointValue: 0.1,
     minLot: 0.005,
-    maxLot: 100,
+    maxLot: 5, // Updated from Deriv specs
     lotStep: 0.005,
-    leverage: 1000,
+    leverage: 4000, // 1:4000 leverage (0.03% margin)
     typicalPrice: 8500,
     contractSize: 1,
     description: 'Simulates a market with 25% volatility, 1-second tick intervals'
@@ -35,9 +35,9 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     name: 'Volatility 50 (1s) Index',
     pointValue: 0.1,
     minLot: 0.005,
-    maxLot: 100,
+    maxLot: 8, // Updated from Deriv specs
     lotStep: 0.005,
-    leverage: 1000,
+    leverage: 2941, // 1:2941 leverage (0.03% margin)
     typicalPrice: 12000,
     contractSize: 1,
     description: 'Simulates a market with 50% volatility, 1-second tick intervals'
@@ -46,9 +46,9 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     name: 'Volatility 75 (1s) Index',
     pointValue: 0.1,
     minLot: 0.05,
-    maxLot: 100,
+    maxLot: 230, // Updated from Deriv specs
     lotStep: 0.05,
-    leverage: 1000,
+    leverage: 2000, // 1:2000 leverage (0.05% margin)
     typicalPrice: 17500,
     contractSize: 1,
     description: 'Simulates a market with 75% volatility, 1-second tick intervals'
@@ -56,10 +56,10 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
   'Volatility 100 (1s) Index': {
     name: 'Volatility 100 (1s) Index',
     pointValue: 0.1,
-    minLot: 0.5,
-    maxLot: 100,
+    minLot: 1,
+    maxLot: 1000, // Updated from Deriv specs
     lotStep: 0.1,
-    leverage: 1000,
+    leverage: 1502, // 1:1502 leverage (0.07% margin)
     typicalPrice: 25000,
     contractSize: 1,
     description: 'Simulates a market with 100% volatility, 1-second tick intervals'
@@ -67,10 +67,10 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
   'Volatility 150 (1s) Index': {
     name: 'Volatility 150 (1s) Index',
     pointValue: 0.1,
-    minLot: 0.1,
-    maxLot: 100,
+    minLot: 1,
+    maxLot: 50, // Updated from Deriv specs
     lotStep: 0.1,
-    leverage: 1000,
+    leverage: 500, // 1:500 leverage (0.20% margin)
     typicalPrice: 38000,
     contractSize: 1,
     description: 'Simulates a market with 150% volatility, 1-second tick intervals'
@@ -78,10 +78,10 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
   'Volatility 250 (1s) Index': {
     name: 'Volatility 250 (1s) Index',
     pointValue: 0.1,
-    minLot: 0.1,
-    maxLot: 100,
+    minLot: 1,
+    maxLot: 50, // Updated from Deriv specs
     lotStep: 0.1,
-    leverage: 1000,
+    leverage: 250, // 1:250 leverage (0.40% margin)
     typicalPrice: 63000,
     contractSize: 1,
     description: 'Simulates a market with 250% volatility, 1-second tick intervals'
@@ -92,9 +92,9 @@ export const SYMBOLS: Record<SymbolName, SymbolData> = {
     name: 'Volatility 10 Index',
     pointValue: 0.1,
     minLot: 0.5,
-    maxLot: 100,
+    maxLot: 1100, // Updated from Deriv specs
     lotStep: 0.1,
-    leverage: 1000,
+    leverage: 5000, // 1:5000 leverage (0.02% margin)
     typicalPrice: 3500,
     contractSize: 1,
     description: 'Simulates a market with 10% volatility, 2-second tick intervals'

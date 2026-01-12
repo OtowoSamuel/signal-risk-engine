@@ -30,16 +30,16 @@ export default function Home() {
   
   return (
     <div className="min-h-screen bg-[#0B0E11]">
-      {/* Sticky Global Status Bar */}
-      <div className="sticky top-0 z-50 border-b border-gray-800/50 backdrop-blur-md bg-[#0B0E11]/80">
+      {/* Sticky Global Status Bar - Highest Z-layer */}
+      <div className="sticky top-0 z-50 border-b border-white/5 backdrop-blur-md bg-[#0B0E11]/95 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider block mb-1 label-text">MT5 Balance</span>
-              <p className="text-white font-mono font-semibold text-lg mono-numbers value-text fade-in">${displayBalance.toFixed(2)}</p>
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 block mb-1 font-semibold label-text">MT5 Balance</span>
+              <p className="text-white font-mono font-bold text-lg mono-numbers value-text fade-in">${displayBalance.toFixed(2)}</p>
             </div>
             <div>
-              <span className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider block mb-1 label-text">Margin Used</span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 block mb-1 font-semibold label-text">Margin Used</span>
               <p className={`font-mono font-semibold text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
                 marginPercent > 70 ? 'text-red-400' : 
                 marginPercent > 50 ? 'text-amber-400' : 
@@ -50,7 +50,7 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <span className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider block mb-1 label-text">Buffer</span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 block mb-1 font-semibold label-text">Buffer</span>
               <p className={`font-mono font-semibold text-lg mono-numbers value-text transition-colors duration-300 fade-in ${
                 bufferPercent < 30 ? 'text-red-400' : 
                 bufferPercent < 50 ? 'text-amber-400' : 
@@ -65,7 +65,9 @@ export default function Home() {
                 <>
                   <span className={`w-2 h-2 rounded-full animate-pulse ${
                     useDemo ? 'bg-amber-500' : 'bg-green-500'
-                  }`}></span>
+                  }`} style={{
+                    filter: useDemo ? 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.8))' : 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.8))'
+                  }}></span>
                   <span className={`text-xs font-medium label-text ${
                     useDemo ? 'text-amber-400' : 'text-green-400'
                   }`}>
@@ -84,8 +86,8 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="border-b border-gray-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white tracking-tight">
@@ -105,25 +107,25 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-full px-6 sm:px-6 lg:px-8 py-6">
         <div className="max-w-7xl mx-auto">
           {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* LEFT COLUMN: INPUT ZONE (30%) - STICKY */}
-            <div className="lg:col-span-3 space-y-6 lg:sticky lg:top-24 lg:border-r lg:border-[rgba(255,255,255,0.05)] lg:pr-6">
+            {/* LEFT COLUMN: INPUT ZONE (33%) - STICKY with Z-axis depth */}
+            <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 lg:z-10" style={{ boxShadow: '10px 0 30px -15px rgba(0, 0, 0, 0.5)' }}>
               {/* Deriv API Connection */}
               <DerivConnection />
-              
-              {/* Account Settings - Condensed */}
-              <AccountSetup />
               
               {/* Trade Calculator - Inputs Only */}
               <div>
                 <TradeCalculator displayMode="inputs-only" />
               </div>
+              
+              {/* Account Settings - Condensed */}
+              <AccountSetup />
 
-              {/* Disclaimer - Moved to sidebar bottom */}
-              <div className="glass-card rounded-lg p-3 border-l-4 border-amber-600/50 bg-amber-950/20">
+              {/* Disclaimer - Sidebar bottom with reduced opacity */}
+              <div className="glass-card rounded-lg p-3 border-l-4 border-amber-600/50 bg-amber-950/20 opacity-40 hover:opacity-100 transition-opacity">
                 <div className="flex items-start gap-2">
                   <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -138,9 +140,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* RIGHT COLUMN: INTEL ZONE (70%) */}
-            <div className="lg:col-span-9 space-y-6">
+            {/* RIGHT COLUMN: INTEL ZONE (67%) - 4:8 Golden Ratio */}
+            <div className="lg:col-span-8 space-y-6 lg:z-0">
               {/* Trade Analysis - Bento Grid (Strategy + Metrics Side-by-Side) */}
+              {/* Note: Risk metric card edges align with Open Positions table columns below for architectural consistency */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left: Stacking Strategy */}
                 <div className="rounded-xl p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
@@ -166,8 +169,8 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800/50 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <footer className="border-t border-white/5 mt-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-gray-400 text-center md:text-left">
               <p>© 2026 Signal Risk Engine • Educational Tool Only</p>

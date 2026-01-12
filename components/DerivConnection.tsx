@@ -33,7 +33,9 @@ export default function DerivConnection() {
   };
 
   const handleDisconnect = () => {
-    localStorage.removeItem('deriv_token');
+    localStorage.removeItem('deriv_api_token');
+    setShowTokenInput(false);
+    setToken('');
     disconnect();
   };
 
@@ -49,7 +51,8 @@ export default function DerivConnection() {
             isConnecting ? 'bg-amber-500 animate-pulse' : 
             'bg-gray-600'
           }`} style={{
-            boxShadow: isConnected ? '0 0 10px rgba(16, 185, 129, 0.6)' : 'none'
+            boxShadow: isConnected ? '0 0 10px rgba(16, 185, 129, 0.6)' : 'none',
+            filter: isConnected ? 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.8))' : isConnecting ? 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.6))' : 'none'
           }} />
           <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider label-text">Deriv API</h3>
           {isAuthorized && (hasDemo || hasReal) && (
@@ -79,7 +82,7 @@ export default function DerivConnection() {
       {isConnected && !isAuthorized && !showTokenInput && (
         <button
           onClick={() => setShowTokenInput(true)}
-          className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold active:scale-95 cursor-pointer"
+          className="w-full bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white px-5 py-2.5 rounded-md transition-all text-sm font-semibold active:scale-95 cursor-pointer border-t border-white/20 shadow-lg shadow-blue-500/30"
         >
           Connect MT5 Account
         </button>
@@ -95,14 +98,14 @@ export default function DerivConnection() {
             value={token}
             onChange={(e) => setToken(e.target.value)}
             placeholder="Paste your Deriv API token"
-            className="w-full px-3 py-2 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
+            className="w-full px-3 py-2 bg-[#1E2329] border border-white/5 rounded-md text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
             onKeyDown={(e) => e.key === 'Enter' && handleAuthorize()}
           />
           <div className="flex gap-2">
             <button
               onClick={handleAuthorize}
               disabled={!token.trim()}
-              className="flex-1 bg-[#2962FF] hover:bg-[#2962FF]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold active:scale-95 cursor-pointer"
+              className="flex-1 bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100 text-white px-5 py-2.5 rounded-md transition-all text-sm font-semibold active:scale-95 cursor-pointer border-t border-white/20 shadow-lg shadow-blue-500/30"
             >
               Authorize
             </button>
@@ -111,7 +114,7 @@ export default function DerivConnection() {
                 setShowTokenInput(false);
                 setToken('');
               }}
-              className="px-4 py-2 bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 rounded-lg transition-all text-sm font-medium cursor-pointer"
+              className="px-5 py-2.5 bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 rounded-md transition-all text-sm font-semibold cursor-pointer active:scale-95 border border-white/5"
             >
               Cancel
             </button>
@@ -130,8 +133,8 @@ export default function DerivConnection() {
       {isAuthorized && account && (
         <div className="space-y-2">
           <div className="elevated-card rounded-lg p-2.5">
-            <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text mb-0.5">Live Balance</p>
-            <p className="text-lg font-semibold text-[#10B981] mono-numbers value-text fade-in">
+            <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold label-text mb-1">Live Balance</p>
+            <p className="text-lg font-bold text-[#10B981] mono-numbers value-text fade-in">
               <span className="text-sm opacity-70">$</span>{account.balance.toFixed(2)} <span className="text-sm opacity-70">{account.currency}</span>
             </p>
           </div>
@@ -141,10 +144,10 @@ export default function DerivConnection() {
               {hasReal && (
                 <button
                   onClick={() => toggleAccountType(false)}
-                  className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
+                  className={`flex-1 px-4 py-2 rounded-md text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
                     !useDemo
                       ? 'bg-green-500/20 text-green-400 border border-green-500/50'
-                      : 'bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 border border-[rgba(255,255,255,0.05)]'
+                      : 'bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 border border-white/5'
                   }`}
                 >
                   Real Account
@@ -153,10 +156,10 @@ export default function DerivConnection() {
               {hasDemo && (
                 <button
                   onClick={() => toggleAccountType(true)}
-                  className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
+                  className={`flex-1 px-4 py-2 rounded-md text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
                     useDemo
                       ? 'bg-amber-500/20 text-amber-400 border border-amber-500/50'
-                      : 'bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 border border-[rgba(255,255,255,0.05)]'
+                      : 'bg-[#1E2329] hover:bg-[#2B3139] text-gray-300 border border-white/5'
                   }`}
                 >
                   Demo Account
@@ -167,7 +170,7 @@ export default function DerivConnection() {
           
           <button
             onClick={handleDisconnect}
-            className="w-full bg-[#1E2329] hover:bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg transition-all text-sm font-medium active:scale-95 cursor-pointer"
+            className="w-full bg-[#1E2329] hover:bg-red-500/20 hover:brightness-110 text-red-400 border border-red-500/30 px-5 py-2.5 rounded-md transition-all text-sm font-semibold active:scale-95 cursor-pointer"
           >
             Disconnect
           </button>

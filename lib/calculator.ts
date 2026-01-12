@@ -13,6 +13,7 @@ import {
   StackingAnalysis
 } from '@/types';
 import { getSymbol } from './symbols';
+import { getDerivSpec, validateLotSize as validateLotSizeSpec, calculateMarginFromSpec } from './deriv-specs';
 
 // Constants from PRD Section 8 - Stacking Rules
 const MARGIN_USAGE_CAP = 0.35; // 35% margin usage cap for single position
@@ -25,6 +26,7 @@ const CRITICAL_STACKING_THRESHOLD = 0.85; // 85% cumulative margin
  * Calculate maximum safe lot size
  * Formula from PRD Section 7.2 (FR-2.1):
  * Max Lot Size = (MT5 Balance × 0.35) / (SL Points × Point Value)
+ * Enforces actual Deriv min/max lot constraints
  */
 export function calculateMaxLotSize(
   mt5Balance: number,
@@ -32,23 +34,32 @@ export function calculateMaxLotSize(
   symbol: SymbolName
 ): number {
   const symbolData = getSymbol(symbol);
+  const derivSpec = getDerivSpec(symbol);
   
   if (slPoints <= 0 || mt5Balance <= 0 || isNaN(slPoints) || isNaN(mt5Balance)) {
     return 0;
   }
 
+  // Use actual point value from Deriv specs if available
+  const pointValue = derivSpec ? derivSpec.pointValue : symbolData.pointValue;
+
   // Calculate raw lot size
   const rawLotSize = 
-    (mt5Balance * MARGIN_USAGE_CAP) / (slPoints * symbolData.pointValue);
+    (mt5Balance * MARGIN_USAGE_CAP) / (slPoints * pointValue);
 
   if (!isFinite(rawLotSize) || rawLotSize <= 0) {
     return 0;
   }
 
+  // Use actual Deriv constraints if available, otherwise use symbol data
+  const minLot = derivSpec ? derivSpec.minLot : symbolData.minLot;
+  const maxLot = derivSpec ? derivSpec.maxLot : symbolData.maxLot;
+  const lotStep = symbolData.lotStep; // Keep using symbol data for lot step
+
   // Apply MT5 constraints (FR-2.2)
-  let lotSize = Math.floor(rawLotSize / symbolData.lotStep) * symbolData.lotStep;
-  lotSize = Math.max(symbolData.minLot, lotSize);
-  lotSize = Math.min(symbolData.maxLot, lotSize);
+  let lotSize = Math.floor(rawLotSize / lotStep) * lotStep;
+  lotSize = Math.max(minLot, lotSize);
+  lotSize = Math.min(maxLot, lotSize);
 
   // Round to 2 decimals (MT5 format)
   return Math.round(lotSize * 100) / 100;
@@ -56,26 +67,39 @@ export function calculateMaxLotSize(
 
 /**
  * Calculate margin required for a position
- * Formula from PRD Appendix A.2
- * Updated for accurate Deriv synthetic indices margin calculation
+ * Uses actual Deriv margin specifications when available
+ * Falls back to legacy formula for symbols not in Deriv specs
  */
 export function calculateMargin(
   lotSize: number,
   symbol: SymbolName,
   entryPrice?: number // Optional: use for real-time price, otherwise use typical price
 ): number {
-  const symbolData = getSymbol(symbol);
-  
   if (lotSize <= 0 || isNaN(lotSize)) {
     return 0;
   }
+
+  // Try to use actual Deriv specifications first
+  const derivSpec = getDerivSpec(symbol);
+  const symbolData = getSymbol(symbol);
   
   // Use provided entry price or fall back to typical price for the symbol
   const price = entryPrice && entryPrice > 0 ? entryPrice : symbolData.typicalPrice;
   
-  // For Deriv synthetic indices:
+  if (derivSpec) {
+    // Use real Deriv margin calculation:
+    // Margin = Lot Size × Contract Size × Price × (Margin % / 100)
+    const margin = lotSize * derivSpec.contractSize * price * (derivSpec.marginPercent / 100);
+    
+    if (!isFinite(margin)) {
+      return 0;
+    }
+    
+    return Math.round(margin * 100) / 100;
+  }
+  
+  // Fallback to legacy calculation for symbols not in Deriv specs
   // Margin = (Lot Size × Contract Size × Price) / Leverage
-  // Contract size is 1 for synthetic indices (not 100,000 like forex)
   const margin = (lotSize * symbolData.contractSize * price) / symbolData.leverage;
   
   if (!isFinite(margin)) {
@@ -94,9 +118,50 @@ export function calculateRiskAmount(
   symbol: SymbolName
 ): number {
   const symbolData = getSymbol(symbol);
-  const riskAmount = lotSize * slPoints * symbolData.pointValue;
+  const derivSpec = getDerivSpec(symbol);
+  
+  // Use actual point value from Deriv specs if available
+  const pointValue = derivSpec ? derivSpec.pointValue : symbolData.pointValue;
+  const riskAmount = lotSize * slPoints * pointValue;
   
   return Math.round(riskAmount * 100) / 100;
+}
+
+/**
+ * Validate lot size against Deriv specifications
+ * Returns validation result with error message if invalid
+ */
+export function validateLotSize(
+  symbol: SymbolName,
+  lotSize: number
+): { valid: boolean; error?: string; adjustedLotSize?: number } {
+  const derivSpec = getDerivSpec(symbol);
+  
+  if (!derivSpec) {
+    // If no Deriv spec, use symbol data for validation
+    const symbolData = getSymbol(symbol);
+    
+    if (lotSize < symbolData.minLot) {
+      return {
+        valid: false,
+        error: `Lot size ${lotSize} is below minimum ${symbolData.minLot}`,
+        adjustedLotSize: symbolData.minLot
+      };
+    }
+    
+    if (lotSize > symbolData.maxLot) {
+      return {
+        valid: false,
+        error: `Lot size ${lotSize} exceeds maximum ${symbolData.maxLot}`,
+        adjustedLotSize: symbolData.maxLot
+      };
+    }
+    
+    return { valid: true };
+  }
+  
+  // Use Deriv spec validation
+  return validateLotSizeSpec(symbol, lotSize);
 }
 
 /**

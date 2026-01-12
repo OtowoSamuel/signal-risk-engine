@@ -75,23 +75,23 @@ export default function StackingTracker() {
           {openPositions.length > 0 && (
             <button
               onClick={clearPositions}
-              className="text-sm text-red-400 hover:text-red-300 transition-colors px-3 py-1 rounded-lg bg-red-900/20 border border-red-500/30 font-medium cursor-pointer"
+              className="text-sm text-red-400 hover:brightness-110 transition-all px-4 py-2 rounded-lg bg-red-900/20 border border-red-500/30 font-medium cursor-pointer active:scale-95"
             >
               Clear All
             </button>
           )}
           <button
             onClick={() => setIsAddingPosition(!isAddingPosition)}
-            className="text-base bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-6 py-2.5 rounded-lg transition-all font-semibold glow-blue active:scale-95 cursor-pointer"
+            className="text-base bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white px-6 py-2.5 rounded-lg transition-all font-semibold border-t border-white/20 shadow-lg shadow-blue-500/30 active:scale-95 cursor-pointer"
           >
-            {isAddingPosition ? 'Cancel' : '+ Add Position'}
+            <span className="inline-block" style={{ transform: 'translateY(-0.5px)' }}>{isAddingPosition ? 'Cancel' : '+ Add Position'}</span>
           </button>
         </div>
       </div>
 
       {/* Add Position Form */}
       {isAddingPosition && (
-        <div className="mb-6 bg-gray-900/30 rounded-lg p-4 space-y-3 border border-gray-700/30">
+        <div className="mb-6 bg-gray-900/30 rounded-lg p-4 space-y-4 border border-white/5">
           <h3 className="text-sm font-medium text-gray-300">Add Open Position</h3>
           
           <div className="grid grid-cols-3 gap-3">
@@ -100,7 +100,7 @@ export default function StackingTracker() {
               <select
                 value={newPosition.symbol}
                 onChange={(e) => setNewPosition({ ...newPosition, symbol: e.target.value as SymbolName })}
-                className="w-full px-3 py-2 bg-gray-900/50 border border-[rgba(255,255,255,0.05)] rounded text-sm text-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 cursor-pointer"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-white/5 rounded-md text-sm text-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 cursor-pointer shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
               >
                 {symbolNames.map((symbol) => (
                   <option key={symbol} value={symbol} className="bg-gray-900 text-white">{symbol}</option>
@@ -117,7 +117,7 @@ export default function StackingTracker() {
                 min="0.1"
                 max="100"
                 step="0.1"
-                className="w-full px-3 py-2 bg-gray-900/50 border border-[rgba(255,255,255,0.05)] rounded text-sm text-white font-mono focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-white/5 rounded-md text-sm text-white font-mono focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
               />
             </div>
             
@@ -129,31 +129,31 @@ export default function StackingTracker() {
                 onChange={(e) => setNewPosition({ ...newPosition, stopLoss: parseInt(e.target.value) || 50 })}
                 min="1"
                 max="1000"
-                className="w-full px-3 py-2 bg-gray-900/50 border border-[rgba(255,255,255,0.05)] rounded text-sm text-white font-mono focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
+                className="w-full px-3 py-2 bg-gray-900/50 border border-white/5 rounded-md text-sm text-white font-mono focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
               />
             </div>
           </div>
           
           <button
             onClick={handleAddPosition}
-            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white text-sm font-medium py-2 rounded-lg transition-all active:scale-95 glow-blue cursor-pointer"
+            className="w-full bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white text-sm font-semibold py-2.5 px-5 rounded-md transition-all active:scale-95 border-t border-white/20 shadow-lg shadow-blue-500/30 cursor-pointer"
           >
             Add Position
           </button>
         </div>
       )}
 
-      {/* Positions List */}
+      {/* Positions List - Max height to manage fold */}
       {openPositions.length > 0 ? (
-        <div className="space-y-2 mb-6">
+        <div className="space-y-2 mb-6 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
           {openPositions.map((position) => (
             <div
               key={position.id}
-              className="flex items-center justify-between elevated-card rounded-lg p-3 hover:bg-white/5 transition-colors"
+              className="flex items-center justify-between elevated-card rounded-lg p-3 hover:bg-white/5 transition-all duration-200"
             >
               <div className="flex-1">
                 <p className="font-medium text-white label-text text-sm">{position.symbol}</p>
-                <div className="flex gap-3 text-xs text-gray-400 mt-0.5 mono-numbers">
+                <div className="flex gap-4 text-xs text-[#94A3B8] mt-1 mono-numbers">
                   <span>Lot: {position.lotSize.toFixed(2)}</span>
                   <span>SL: {position.stopLoss} pts</span>
                   <span>Margin: ${position.marginUsed.toFixed(2)}</span>
@@ -161,7 +161,8 @@ export default function StackingTracker() {
               </div>
               <button
                 onClick={() => removePosition(position.id)}
-                className="text-red-600 hover:text-red-700 ml-4 transition-colors active:scale-95"
+                className="text-red-400 hover:text-red-300 ml-4 transition-colors active:scale-95 p-2.5 -m-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label="Remove position"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -171,7 +172,7 @@ export default function StackingTracker() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 px-4">
+        <div className="text-center py-12 px-4">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800/30 mb-4">
             <svg
               className="w-10 h-10 text-gray-600"
@@ -193,19 +194,19 @@ export default function StackingTracker() {
           </p>
           <button
             onClick={() => setIsAddingPosition(true)}
-            className="inline-flex items-center gap-2 bg-[#2962FF] hover:bg-[#2962FF]/90 text-white px-5 py-2.5 rounded-lg transition-all font-semibold text-sm shadow-lg shadow-[#2962FF]/30 hover:shadow-[#2962FF]/50 active:scale-95"
+            className="inline-flex items-center gap-2 bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white px-6 py-2.5 rounded-lg transition-all font-semibold text-sm shadow-lg shadow-blue-500/30 border-t border-white/20 active:scale-95"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ transform: 'translateY(-0.5px)' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
-            Add Your First Position
+            <span style={{ transform: 'translateY(-0.5px)' }}>Add Your First Position</span>
           </button>
         </div>
       )}
 
       {/* Stacking Analysis */}
       {openPositions.length > 0 && (
-        <div className="border-t border-gray-700/30 pt-6 space-y-4">
+        <div className="border-t border-white/5 pt-6 space-y-4">
           <h3 className="text-sm font-medium text-gray-300">Stacking Analysis</h3>
           
           {/* Progress Bar */}
@@ -214,15 +215,18 @@ export default function StackingTracker() {
               <span>Margin Usage</span>
               <span className="font-medium font-mono">{stackingAnalysis.totalMarginPercentage.toFixed(0)}%</span>
             </div>
-            <div className="w-full bg-gray-700/30 rounded-full h-3">
+            <div className="w-full bg-gray-700/30 rounded-full h-3 overflow-hidden">
               <div
-                className={`h-3 rounded-full transition-all ${
+                className={`h-3 transition-all ${
                   stackingAnalysis.warningLevel === 'critical' ? 'bg-red-500 glow-red' :
                   stackingAnalysis.warningLevel === 'high' ? 'bg-orange-500' :
                   stackingAnalysis.warningLevel === 'moderate' ? 'bg-amber-500' :
                   'bg-[#10B981] glow-green'
                 }`}
-                style={{ width: `${Math.min(stackingAnalysis.totalMarginPercentage, 100)}%` }}
+                style={{ 
+                  width: `${Math.min(stackingAnalysis.totalMarginPercentage, 100)}%`,
+                  borderRadius: '9999px'
+                }}
               />
             </div>
             <div className="flex justify-between text-xs text-gray-500 mt-1">

@@ -68,8 +68,8 @@ export default function AccountSetup() {
           <div className="elevated-card rounded-lg p-2">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-0.5 label-text">MT5 Balance</p>
-                <p className="mono-numbers text-lg font-semibold text-white value-text fade-in">
+                <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1 font-semibold label-text">MT5 Balance</p>
+                <p className="mono-numbers text-lg font-bold text-white value-text fade-in">
                   <span className="text-base opacity-70">$</span>{isAuthorized && account?.balance ? account.balance.toFixed(2) : settings.mt5Balance.toFixed(2)}
                 </p>
               </div>
@@ -85,8 +85,8 @@ export default function AccountSetup() {
             </div>
           </div>
           <div className="elevated-card rounded-lg p-2">
-            <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-0.5 label-text">Target Margin</p>
-            <p className="mono-numbers text-lg font-semibold text-[#2962FF] value-text fade-in">{settings.targetMarginPercent}<span className="text-base opacity-70">%</span></p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1 font-semibold label-text">Target Margin</p>
+            <p className="mono-numbers text-lg font-bold text-[#2962FF] value-text fade-in">{settings.targetMarginPercent}<span className="text-base opacity-70">%</span></p>
           </div>
           {isAuthorized && (
             <div className="text-xs text-green-400/70 bg-green-500/10 border border-green-500/20 rounded px-2 py-1.5">
@@ -115,7 +115,7 @@ export default function AccountSetup() {
                 max="100000"
                 step="0.01"
                 disabled={isAuthorized}
-                className={`w-full pl-10 pr-4 py-3 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 ${
+                className={`w-full pl-10 pr-4 py-3 bg-[#1E2329] border border-white/5 rounded-md text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)] ${
                   isAuthorized ? 'opacity-60 cursor-not-allowed' : ''
                 }`}
                 placeholder="10.00"
@@ -142,7 +142,7 @@ export default function AccountSetup() {
                 min="10"
                 max="80"
                 step="5"
-                className="w-full pr-10 pl-4 py-3 bg-[#1E2329] border border-[rgba(255,255,255,0.05)] rounded-lg text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
+                className="w-full pr-10 pl-4 py-3 bg-[#1E2329] border border-white/5 rounded-md text-xl text-white mono-numbers placeholder-gray-500 transition-all value-text focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
                 placeholder="35"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">%</span>
@@ -166,7 +166,7 @@ export default function AccountSetup() {
           {/* Save Button */}
           <button
             type="submit"
-            className="w-full bg-[#2962FF] hover:bg-[#2962FF]/90 text-white font-medium py-3 px-4 rounded-lg transition-all glow-blue active:scale-95 cursor-pointer"
+            className="w-full bg-gradient-to-b from-blue-500 to-blue-600 hover:brightness-110 text-white font-semibold py-3 px-5 rounded-md transition-all active:scale-95 cursor-pointer border-t border-white/20 shadow-lg shadow-blue-500/30"
           >
             Save Settings
           </button>
