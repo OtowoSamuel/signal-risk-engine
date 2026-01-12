@@ -145,11 +145,19 @@ export function useDerivAPI() {
     }
   }, [client, isConnecting, isConnected]);
 
-  const disconnect = useCallback(() => {
+  const disconnect = useCallback(async () => {
     client.disconnect();
     setConnected(false);
     setAuthorized(false);
     setAccount(null);
+    
+    // Reconnect to show "Connect MT5 Account" button
+    try {
+      await client.connect();
+      setConnected(true);
+    } catch (err) {
+      console.log('Reconnect after disconnect failed:', err);
+    }
   }, [client]);
 
   const authorize = useCallback(async (token: string) => {

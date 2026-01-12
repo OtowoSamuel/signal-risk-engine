@@ -112,7 +112,7 @@ export default function Home() {
           {/* Pro-Trader Layout: Input Zone (Left) + Intel Zone (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
             {/* LEFT COLUMN: INPUT ZONE (33%) - STICKY with Z-axis depth */}
-            <div className="lg:col-span-4 space-y-4 sm:space-y-6 lg:sticky lg:top-24 lg:z-10 lg:shadow-[10px_0_30px_-15px_rgba(0,0,0,0.5)]">
+            <div className="lg:col-span-4 space-y-4 sm:space-y-6 lg:self-start lg:sticky lg:top-24 lg:z-10 lg:shadow-[10px_0_30px_-15px_rgba(0,0,0,0.5)]">
               {/* Deriv API Connection */}
               <DerivConnection />
               

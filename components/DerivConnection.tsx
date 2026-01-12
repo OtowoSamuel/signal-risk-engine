@@ -91,7 +91,7 @@ export default function DerivConnection() {
       {isConnected && !isAuthorized && showTokenInput && (
         <div className="space-y-2">
           <div className="text-xs text-gray-400 mb-2">
-            Get your token from: <a href="https://app.deriv.com/account/api-token" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">deriv.com/account/api-token</a>
+            Get your token from: <a href="https://app.deriv.com/account/api-token" target="_blank" rel="noopener noreferrer" className="text-[#94A3B8] hover:text-white underline transition-colors">deriv.com/account/api-token</a>
           </div>
           <input
             type="password"
@@ -123,7 +123,7 @@ export default function DerivConnection() {
             href="https://app.deriv.com/account/api-token"
             target="_blank"
             rel="noopener noreferrer"
-            className="block text-xs text-[#2962FF] hover:text-[#2962FF]/80 text-center transition-colors"
+            className="block text-xs text-[#94A3B8] hover:text-white text-center transition-colors underline"
           >
             Get your API token →
           </a>
