@@ -6,9 +6,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useCalculator, useSettings } from '@/lib/store';
-import { getSymbolNames } from '@/lib/symbols';
+import { useCalculator, useSettings, usePositions } from '@/lib/store';
+import { getSymbolNames, getSymbol } from '@/lib/symbols';
+import { getDerivSpec } from '@/lib/deriv-specs';
 import { validateCalculationInputs } from '@/lib/calculator';
+import { useDerivAPI } from '@/lib/hooks/useDerivAPI';
 import { SymbolName } from '@/types';
 import ShowMath from './ShowMath';
 import InstrumentSpecs from './InstrumentSpecs';
@@ -201,13 +203,13 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
                 <span className="text-base font-semibold text-white mono-numbers value-text fade-in"><span className="text-sm opacity-70">$</span>{calculationResult.stackingInfo.marginPerPosition.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center border-t border-white/10 pt-1.5 mt-1.5">
-                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Total Margin</span>
+                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Total Margin (All)</span>
                 <span className="text-base font-semibold text-white mono-numbers value-text fade-in">
                   <span className="text-sm opacity-70">$</span>{(calculationResult.stackingInfo.positionsToStack * calculationResult.stackingInfo.marginPerPosition).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Total Lots</span>
+                <span className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider label-text">Total Lots (All)</span>
                 <span className="text-base font-semibold text-white mono-numbers value-text fade-in">{calculationResult.stackingInfo.totalStackedLots} <span className="text-sm opacity-70">lots</span></span>
               </div>
             </div>
@@ -217,127 +219,151 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
     );
   }
 
-  // Gauges only mode (for middle right)
+  // Gauges only mode (for middle right) - shows ACTUAL tracked positions
   if (displayMode === 'gauges-only') {
+    const { account, isAuthorized } = useDerivAPI();
+    const { openPositions } = usePositions();
+    
+    const displayBalance = isAuthorized && account?.balance ? account.balance : settings.mt5Balance;
+    const totalMarginUsed = openPositions.reduce((sum, pos) => sum + pos.marginUsed, 0);
+    const totalRiskAmount = openPositions.reduce((sum, pos) => {
+      const symbolData = getSymbol(pos.symbol);
+      const derivSpec = getDerivSpec(pos.symbol);
+      const pointValue = derivSpec ? derivSpec.pointValue : symbolData.pointValue;
+      return sum + (pos.lotSize * pos.stopLoss * pointValue);
+    }, 0);
+    const marginPercent = displayBalance > 0 ? (totalMarginUsed / displayBalance) * 100 : 0;
+    const riskPercent = displayBalance > 0 ? (totalRiskAmount / displayBalance) * 100 : 0;
+    const drawdownBuffer = displayBalance - totalMarginUsed;
+    const bufferPercent = displayBalance > 0 ? (drawdownBuffer / displayBalance) * 100 : 100;
+    
     return (
       <>
-        {calculationResult && stopLoss > 0 && inputErrors.length === 0 && (
-          <div className="space-y-3">
-            {/* Margin Required */}
-            <div className="rounded-lg p-3 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-sm">
-              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Margin Required</p>
-              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value fade-in">
-                <span className="text-base opacity-70">$</span>{calculationResult.marginRequired.toFixed(2)}
-              </p>
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-[#94A3B8] label-text font-semibold">
-                    {((calculationResult.marginRequired / settings.mt5Balance) * 100).toFixed(1)}<span className="text-[10px] opacity-70">%</span>
-                  </span>
-                </div>
-                <div className="w-full bg-gray-900/50 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-300 animate-gauge ${
-                      (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70 
-                        ? 'bg-red-500' 
-                        : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50 
-                        ? 'bg-amber-500' 
-                        : 'bg-[#2962FF]'
-                    }`}
-                    style={{ 
-                      width: `${Math.min((calculationResult.marginRequired / settings.mt5Balance) * 100, 100)}%`,
-                      boxShadow: (calculationResult.marginRequired / settings.mt5Balance) * 100 > 70
-                        ? '0 0 12px rgba(239, 68, 68, 0.8)'
-                        : (calculationResult.marginRequired / settings.mt5Balance) * 100 > 50
-                        ? '0 0 12px rgba(245, 158, 11, 0.7)'
-                        : '0 0 12px rgba(41, 98, 255, 0.8)',
-                      borderRadius: '9999px'
-                    }}
-                  ></div>
-                </div>
+        <div className="space-y-3">
+          {/* Margin Used */}
+          <div className="rounded-lg p-3 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-sm">
+            <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Margin</p>
+            <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value fade-in">
+              <span className="text-base opacity-70">$</span>{totalMarginUsed.toFixed(2)}
+            </p>
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-[#94A3B8] label-text font-semibold">
+                  {marginPercent.toFixed(1)}<span className="text-[10px] opacity-70">%</span>
+                </span>
+                {openPositions.length > 0 && (
+                  <span className="text-gray-500 text-[10px]">{openPositions.length} {openPositions.length === 1 ? 'position' : 'positions'}</span>
+                )}
+              </div>
+              <div className="w-full bg-gray-900/50 rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                    marginPercent > 70 
+                      ? 'bg-red-500' 
+                      : marginPercent > 50 
+                      ? 'bg-amber-500' 
+                      : 'bg-[#2962FF]'
+                  }`}
+                  style={{ 
+                    width: `${Math.min(marginPercent, 100)}%`,
+                    boxShadow: marginPercent > 70
+                      ? '0 0 12px rgba(239, 68, 68, 0.8)'
+                      : marginPercent > 50
+                      ? '0 0 12px rgba(245, 158, 11, 0.7)'
+                      : '0 0 12px rgba(41, 98, 255, 0.8)',
+                    borderRadius: '9999px'
+                  }}
+                ></div>
               </div>
             </div>
+          </div>
 
-            {/* Risk Amount */}
-            <div className="rounded-lg p-3 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-sm">
-              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Risk Amount</p>
-              <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value fade-in">
-                <span className="text-base opacity-70">$</span>{calculationResult.riskAmount.toFixed(2)}
-              </p>
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-[#94A3B8] label-text font-semibold">
-                    {calculationResult.riskPercentage.toFixed(2)}<span className="text-[10px] opacity-70">%</span>
-                  </span>
-                </div>
-                <div className="w-full bg-gray-900/50 rounded-full h-1.5">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-300 animate-gauge ${
-                      calculationResult.riskPercentage > 70 
-                        ? 'bg-red-500' 
-                        : calculationResult.riskPercentage > 50 
-                        ? 'bg-amber-500' 
-                        : 'bg-[#10B981]'
-                    }`}
-                    style={{ 
-                      width: `${Math.min(calculationResult.riskPercentage, 100)}%`,
-                      boxShadow: calculationResult.riskPercentage > 70
-                        ? '0 0 10px rgba(239, 68, 68, 0.6)'
-                        : calculationResult.riskPercentage > 50
-                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
-                        : '0 0 10px rgba(16, 185, 129, 0.6)'
-                    }}
-                  ></div>
-                </div>
+          {/* Risk Amount */}
+          <div className="rounded-lg p-3 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-sm">
+            <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Risk Amount</p>
+            <p className="text-xl font-semibold text-white mono-numbers value-text mb-2 animate-value fade-in">
+              <span className="text-base opacity-70">$</span>{totalRiskAmount.toFixed(2)}
+            </p>
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-[#94A3B8] label-text font-semibold">
+                  {riskPercent.toFixed(2)}<span className="text-[10px] opacity-70">%</span>
+                </span>
+              </div>
+              <div className="w-full bg-gray-900/50 rounded-full h-1.5">
+                <div 
+                  className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                    riskPercent > 70 
+                      ? 'bg-red-500' 
+                      : riskPercent > 50 
+                      ? 'bg-amber-500' 
+                      : 'bg-[#10B981]'
+                  }`}
+                  style={{ 
+                    width: `${Math.min(riskPercent, 100)}%`,
+                    boxShadow: riskPercent > 70
+                      ? '0 0 10px rgba(239, 68, 68, 0.6)'
+                      : riskPercent > 50
+                      ? '0 0 10px rgba(245, 158, 11, 0.5)'
+                      : '0 0 10px rgba(16, 185, 129, 0.6)'
+                  }}
+                ></div>
               </div>
             </div>
+          </div>
 
-            {/* Drawdown Buffer */}
-            <div className={`rounded-lg p-3 border transition-all duration-300 backdrop-blur-sm overflow-hidden ${
-              calculationResult.drawdownBufferPercentage < 20 
-                ? 'bg-red-500/20 border-red-500/50 animate-pulse critical-glow' 
-                : calculationResult.drawdownBufferPercentage < 50 
-                ? 'bg-amber-500/15 border-amber-500/30 warning-glow' 
-                : 'border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E]'
+          {/* Drawdown Buffer */}
+          <div className={`rounded-lg p-3 border transition-all duration-300 backdrop-blur-sm overflow-hidden ${
+            bufferPercent < 20 
+              ? 'bg-red-500/20 border-red-500/50 animate-pulse critical-glow' 
+              : bufferPercent < 50 
+              ? 'bg-amber-500/15 border-amber-500/30 warning-glow' 
+              : 'border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E]'
+          }`}>
+            <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Drawdown Buffer</p>
+            <p className={`text-xl font-semibold mono-numbers value-text mb-2 animate-value fade-in ${
+              bufferPercent < 20 
+                ? 'text-red-400' 
+                : bufferPercent < 50 
+                ? 'text-amber-400' 
+                : 'text-[#10B981]'
             }`}>
-              <p className="text-xs text-[#94A3B8] font-semibold uppercase tracking-wider mb-2 label-text">Drawdown Buffer</p>
-              <p className={`text-xl font-semibold mono-numbers value-text mb-2 animate-value fade-in ${
-                calculationResult.drawdownBufferPercentage < 20 
-                  ? 'text-red-400' 
-                  : calculationResult.drawdownBufferPercentage < 50 
-                  ? 'text-amber-400' 
-                  : 'text-[#10B981]'
-              }`}>
-                <span className="text-base opacity-70">$</span>{calculationResult.drawdownBuffer.toFixed(2)}
-              </p>
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-[#94A3B8] label-text font-semibold">
-                    {calculationResult.drawdownBufferPercentage.toFixed(0)}<span className="text-[10px] opacity-70">%</span>
-                  </span>
-                  {calculationResult.drawdownBuffer < 0 && (
-                    <span className="text-red-400 font-medium uppercase text-[10px] tracking-wider">Over-allocated</span>
-                  )}
-                </div>
-                <div className="w-full bg-gray-900/50 rounded-full h-1.5">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-300 animate-gauge ${
-                      calculationResult.drawdownBufferPercentage < 20 
-                        ? 'bg-red-500' 
-                        : calculationResult.drawdownBufferPercentage < 50 
-                        ? 'bg-amber-500' 
-                        : 'bg-[#10B981]'
-                    }`}
-                    style={{ 
-                      width: `${Math.min(calculationResult.drawdownBufferPercentage, 100)}%`,
-                      boxShadow: calculationResult.drawdownBufferPercentage < 20
-                        ? '0 0 10px rgba(239, 68, 68, 0.6)'
-                        : calculationResult.drawdownBufferPercentage < 50
-                        ? '0 0 10px rgba(245, 158, 11, 0.5)'
-                        : '0 0 10px rgba(16, 185, 129, 0.6)'
-                    }}
-                  ></div>
-                </div>
+              <span className="text-base opacity-70">$</span>{drawdownBuffer.toFixed(2)}
+            </p>
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-[#94A3B8] label-text font-semibold">
+                  {bufferPercent.toFixed(0)}<span className="text-[10px] opacity-70">%</span>
+                </span>
+                {drawdownBuffer < 0 && (
+                  <span className="text-red-400 font-medium uppercase text-[10px] tracking-wider">Over-allocated</span>
+                )}
+              </div>
+              <div className="w-full bg-gray-900/50 rounded-full h-1.5">
+                <div 
+                  className={`h-full rounded-full transition-all duration-300 animate-gauge ${
+                    bufferPercent < 20 
+                      ? 'bg-red-500' 
+                      : bufferPercent < 50 
+                      ? 'bg-amber-500' 
+                      : 'bg-[#10B981]'
+                  }`}
+                  style={{ 
+                    width: `${Math.min(Math.max(bufferPercent, 0), 100)}%`,
+                    boxShadow: bufferPercent < 20
+                      ? '0 0 10px rgba(239, 68, 68, 0.6)'
+                      : bufferPercent < 50
+                      ? '0 0 10px rgba(245, 158, 11, 0.5)'
+                      : '0 0 10px rgba(16, 185, 129, 0.6)'
+                  }}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
               </div>
             </div>
           </div>

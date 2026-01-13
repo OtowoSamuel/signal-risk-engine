@@ -147,13 +147,15 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Left: Stacking Strategy */}
                 <div className="rounded-xl p-4 sm:p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
-                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3 sm:mb-4 label-text">Stacking Strategy</h3>
+                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1 label-text">Stacking Strategy</h3>
+                  <p className="text-[10px] text-gray-500 mb-3 sm:mb-4">Multiple small positions to reach target margin</p>
                   <TradeCalculator displayMode="stacking-result-only" />
                 </div>
                 
                 {/* Right: Risk Metrics */}
                 <div className="rounded-xl p-4 sm:p-6 border border-[rgba(255,255,255,0.05)] bg-[linear-gradient(to_bottom_right,rgba(255,255,255,0.02),transparent),#161A1E] backdrop-blur-xl">
-                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3 sm:mb-4 label-text">Risk Analysis</h3>
+                  <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1 label-text">Risk Analysis</h3>
+                  <p className="text-[10px] text-gray-500 mb-3 sm:mb-4">Your current open positions</p>
                   <TradeCalculator displayMode="gauges-only" />
                 </div>
               </div>
