@@ -23,9 +23,11 @@ interface CalculatorState {
   selectedSymbol: SymbolName;
   stopLoss: number;
   entryPrice?: number;
+  tpPrice?: number;
   setSelectedSymbol: (symbol: SymbolName) => void;
   setStopLoss: (sl: number) => void;
   setEntryPrice: (price: number | undefined) => void;
+  setTpPrice: (price: number | undefined) => void;
 
   // Calculation Results
   calculationResult: CalculationResult | null;
@@ -53,6 +55,7 @@ export const useCalculatorStore = create<CalculatorState>()(
       selectedSymbol: 'Volatility 75 (1s) Index',
       stopLoss: 50,
       entryPrice: undefined,
+      tpPrice: undefined,
       calculationResult: null,
       openPositions: [],
 
@@ -99,6 +102,10 @@ export const useCalculatorStore = create<CalculatorState>()(
         }
       },
 
+      setTpPrice: (price) => {
+        set({ tpPrice: price });
+      },
+
       // Calculation Actions
       calculate: () => {
         const { settings, selectedSymbol, stopLoss, entryPrice } = get();
@@ -126,7 +133,8 @@ export const useCalculatorStore = create<CalculatorState>()(
         set({
           calculationResult: null,
           stopLoss: 0,
-          entryPrice: undefined
+          entryPrice: undefined,
+          tpPrice: undefined
         });
       },
 
@@ -180,10 +188,12 @@ export const useCalculator = () => {
   const selectedSymbol = useCalculatorStore((state) => state.selectedSymbol);
   const stopLoss = useCalculatorStore((state) => state.stopLoss);
   const entryPrice = useCalculatorStore((state) => state.entryPrice);
+  const tpPrice = useCalculatorStore((state) => state.tpPrice);
   const calculationResult = useCalculatorStore((state) => state.calculationResult);
   const setSelectedSymbol = useCalculatorStore((state) => state.setSelectedSymbol);
   const setStopLoss = useCalculatorStore((state) => state.setStopLoss);
   const setEntryPrice = useCalculatorStore((state) => state.setEntryPrice);
+  const setTpPrice = useCalculatorStore((state) => state.setTpPrice);
   const calculate = useCalculatorStore((state) => state.calculate);
   const clearCalculation = useCalculatorStore((state) => state.clearCalculation);
   
@@ -191,10 +201,12 @@ export const useCalculator = () => {
     selectedSymbol,
     stopLoss,
     entryPrice,
+    tpPrice,
     calculationResult,
     setSelectedSymbol,
     setStopLoss,
     setEntryPrice,
+    setTpPrice,
     calculate,
     clearCalculation
   };

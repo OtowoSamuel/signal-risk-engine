@@ -198,7 +198,8 @@ export function calculateStackingPositions(
   totalLotSize: number;
 } {
   const symbolData = getSymbol(symbol);
-  const minLotSize = symbolData.minLot;
+  const derivSpec = getDerivSpec(symbol);
+  const minLotSize = derivSpec ? derivSpec.minLot : symbolData.minLot;
   
   // Calculate margin for ONE minimum lot position
   const marginPerPosition = calculateMargin(minLotSize, symbol, entryPrice);

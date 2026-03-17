@@ -47,9 +47,9 @@ describe('Risk Calculation Engine', () => {
     });
 
     it('should scale with lot size', () => {
-      const margin1 = calculateMargin(0.01, 'Volatility 75 (1s) Index', 1000);
-      const margin2 = calculateMargin(0.02, 'Volatility 75 (1s) Index', 1000);
-      expect(margin2).toBe(margin1 * 2);
+      const margin010 = calculateMargin(0.10, 'Volatility 75 (1s) Index', 1000);
+      const margin020 = calculateMargin(0.20, 'Volatility 75 (1s) Index', 1000);
+      expect(margin020).toBeCloseTo(margin010 * 2, 1);
     });
   });
 

@@ -26,6 +26,8 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
     calculationResult,
     setSelectedSymbol,
     setStopLoss,
+    setEntryPrice: setStoredEntryPrice,
+    setTpPrice: setStoredTpPrice,
     calculate
   } = useCalculator();
   
@@ -34,6 +36,7 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
   const [copied, setCopied] = useState(false);
   const [entryPrice, setEntryPrice] = useState<number>(0);
   const [slPrice, setSlPrice] = useState<number>(0);
+  const [tpPriceLocal, setTpPriceLocal] = useState<number>(0);
 
   const symbolNames = getSymbolNames();
 
@@ -125,7 +128,9 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
               value={entryPrice || ''}
               onChange={(e) => {
                 const value = parseFloat(e.target.value);
-                setEntryPrice(isNaN(value) ? 0 : value);
+                const numVal = isNaN(value) ? 0 : value;
+                setEntryPrice(numVal);
+                setStoredEntryPrice(numVal > 0 ? numVal : undefined);
               }}
               min="0"
               step="0.01"
@@ -154,11 +159,42 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
             />
           </div>
 
+          {/* Take Profit Price Input */}
+          <div>
+            <label htmlFor="tpPrice" className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 label-text">
+              Take Profit Price
+            </label>
+            <input
+              type="number"
+              id="tpPrice"
+              value={tpPriceLocal || ''}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                const numVal = isNaN(value) ? 0 : value;
+                setTpPriceLocal(numVal);
+                setStoredTpPrice(numVal > 0 ? numVal : undefined);
+              }}
+              min="0"
+              step="0.01"
+              placeholder="4550"
+              className="w-full px-3 py-2 bg-[#1E2329] border border-white/5 rounded-md text-sm text-white mono-numbers transition-all focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3)]"
+            />
+          </div>
+
           {/* Auto-Calculated SL Points Display */}
           {stopLoss > 0 && (
             <div className="elevated-card rounded-lg p-2 border border-[#2962FF]/30">
               <p className="text-xs text-[#2962FF] label-text">
                 Stop Loss: <span className="mono-numbers font-semibold">{stopLoss.toFixed(2)}</span> points
+              </p>
+            </div>
+          )}
+
+          {/* Auto-Calculated TP Points Display */}
+          {tpPriceLocal > 0 && entryPrice > 0 && (
+            <div className="elevated-card rounded-lg p-2 border border-emerald-500/30">
+              <p className="text-xs text-emerald-400 label-text">
+                Take Profit: <span className="mono-numbers font-semibold">{Math.abs(tpPriceLocal - entryPrice).toFixed(2)}</span> points
               </p>
             </div>
           )}
@@ -364,13 +400,6 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
       </>
     );
   }
-              </div>
-            </div>
-          </div>
-        )}
-      </>
-    );
-  }
 
   // Show Math only mode
   if (displayMode === 'show-math-only') {
@@ -424,14 +453,19 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
             type="number"
             id="entryPrice"
             value={entryPrice || ''}
-            onChange={(e) => setEntryPrice(parseFloat(e.target.value) || 0)}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value);
+              const numVal = isNaN(value) ? 0 : value;
+              setEntryPrice(numVal);
+              setStoredEntryPrice(numVal > 0 ? numVal : undefined);
+            }}
             min="0"
             step="0.01"
             placeholder="4500"
             className="w-full px-4 py-3 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-lg text-xl text-white mono-numbers transition-all"
           />
           <p className="text-xs text-gray-400 mt-1">
-            Current market price or your planned entry
+            Market entry price from signal
           </p>
         </div>
 
@@ -444,7 +478,10 @@ export default function TradeCalculator({ displayMode = 'full' }: TradeCalculato
             type="number"
             id="slPrice"
             value={slPrice || ''}
-            onChange={(e) => setSlPrice(parseFloat(e.target.value) || 0)}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value);
+              setSlPrice(isNaN(value) ? 0 : value);
+            }}
             min="0"
             step="0.01"
             placeholder="4472.29"

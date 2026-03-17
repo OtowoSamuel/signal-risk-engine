@@ -7,6 +7,7 @@ import TradeCalculator from '@/components/TradeCalculator';
 import StackingTracker from '@/components/StackingTracker';
 import Disclaimer from '@/components/Disclaimer';
 import DerivConnection from '@/components/DerivConnection';
+import TradePnLPreview from '@/components/TradePnLPreview';
 
 export default function Home() {
   const { settings } = useSettings();
@@ -159,6 +160,9 @@ export default function Home() {
                   <TradeCalculator displayMode="gauges-only" />
                 </div>
               </div>
+
+              {/* Trade P&L Preview */}
+              <TradePnLPreview />
 
               {/* Show Math - How We Calculate */}
               <TradeCalculator displayMode="show-math-only" />
